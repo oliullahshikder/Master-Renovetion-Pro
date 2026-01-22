@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Master Pro Ultimate</title>
+    <title>Master Pro AI (Complete)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -19,13 +19,14 @@
             background-color: #020617;
             background-image: radial-gradient(circle at 50% 0%, var(--glow) 0%, transparent 60%);
             color: #fff; min-height: 100vh; transition: 0.5s;
+            overflow-x: hidden;
         }
 
         /* 3D GLASS PANEL */
         .glass-panel {
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(30px);
+            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 0.1); border-top: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.8);
+            border-radius: 30px; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.9);
         }
 
         /* --- 3D ROUND BUTTONS --- */
@@ -57,6 +58,15 @@
         }
         .input-3d:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--glow); background: rgba(0,0,0,0.5); }
 
+        /* UPLOAD BOX (FIXED) */
+        .upload-label {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px dashed rgba(255,255,255,0.3); border-radius: 15px;
+            padding: 25px; cursor: pointer; background: rgba(0,0,0,0.2); transition: 0.3s;
+        }
+        .upload-label:hover { background: rgba(255,255,255,0.05); border-color: var(--primary); }
+        .upload-label i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
+
         /* GENERATE BUTTON */
         .gen-btn {
             background: linear-gradient(135deg, var(--primary), #000);
@@ -77,7 +87,7 @@
         <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-2xl">
             MASTER PRO
         </h1>
-        <p class="text-[10px] text-gray-400 uppercase tracking-[0.5em] font-bold mt-2">Free Logic Engine</p>
+        <p class="text-[10px] text-gray-400 uppercase tracking-[0.5em] font-bold mt-2">Full Logic Engine</p>
     </div>
 
     <div class="w-full max-w-lg glass-panel p-8 relative">
@@ -97,7 +107,7 @@
         <div class="space-y-4">
             <div>
                 <label class="text-[10px] uppercase font-bold text-gray-400 ml-2">Project Name</label>
-                <input type="text" id="project" placeholder="e.g. Luxury Villa" class="input-3d">
+                <input type="text" id="project" placeholder="e.g. Modern Villa" class="input-3d">
             </div>
             
             <div id="dynamicInput"></div>
@@ -127,7 +137,7 @@
 
         <div id="loader" class="hidden mt-8 text-center">
             <div class="loader inline-block"></div>
-            <p class="text-xs text-gray-300 mt-4 animate-pulse font-mono">PROCESSING LOGIC...</p>
+            <p class="text-xs text-gray-300 mt-4 animate-pulse font-mono">PROCESSING TEMPLATE LOGIC...</p>
         </div>
     </div>
 
@@ -142,6 +152,8 @@
 
     <script>
         let currentMode = 'A';
+        let uploadedFileName = "";
+        
         setMode('A'); // Init
 
         function setMode(mode) {
@@ -165,18 +177,31 @@
 
             // Dynamic Inputs
             const area = document.getElementById('dynamicInput');
+            
             if(mode === 'A') {
                 area.innerHTML = `<label class="text-[10px] uppercase font-bold text-gray-400 ml-2">Strict Rules</label>
                 <textarea id="extra" placeholder="Enter specific instructions..." class="input-3d h-24"></textarea>`;
             } else if(mode === 'B') {
                 area.innerHTML = `<div class="p-4 border border-purple-500/30 rounded-2xl text-center bg-purple-900/10">
-                    <p class="text-xs text-purple-200"><b>Auto Mode:</b> AI will infer all details.</p>
+                    <p class="text-xs text-purple-200"><b>Auto Mode:</b> AI will infer all details from project name.</p>
                 </div>`;
             } else {
-                area.innerHTML = `<div class="p-4 border-2 border-dashed border-orange-500/30 rounded-2xl text-center bg-orange-900/10 cursor-pointer">
-                    <i class="fas fa-cloud-upload-alt text-2xl text-orange-400 mb-2"></i>
-                    <p class="text-xs text-orange-200"><b>Reverse Mode:</b><br>Assume Final Image Uploaded</p>
-                </div>`;
+                // FIXED UPLOAD LOGIC
+                area.innerHTML = `
+                <label for="fileUpload" class="upload-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <div id="fileText" class="text-xs text-gray-300 font-bold">Tap to Upload Final Image</div>
+                    <div class="text-[9px] text-gray-500 mt-1">For Reverse Engineering</div>
+                </label>
+                <input type="file" id="fileUpload" class="hidden" accept="image/*" onchange="handleFile(this)">
+                `;
+            }
+        }
+
+        function handleFile(input) {
+            if (input.files && input.files[0]) {
+                uploadedFileName = input.files[0].name;
+                document.getElementById('fileText').innerHTML = `<span class="text-green-400">Selected: ${uploadedFileName}</span>`;
             }
         }
 
@@ -191,44 +216,70 @@
             const proj = document.getElementById('project').value || "Project";
             const type = document.getElementById('type').value;
             const stages = document.getElementById('stages').value;
-            const extra = document.getElementById('extra') ? document.getElementById('extra').value : "None";
+            let extra = "None";
+            let reverseContext = "";
 
-            // --- FULL MASTER TEMPLATE LOGIC EMBEDDED ---
+            if(currentMode === 'A' && document.getElementById('extra')) {
+                extra = document.getElementById('extra').value;
+            } 
+            
+            // LOGIC INJECTION FOR REVERSE MODE
+            if (currentMode === 'R') {
+                if(uploadedFileName) {
+                    reverseContext = `USER HAS UPLOADED A FINAL IMAGE named '${uploadedFileName}'. Assume this image shows the COMPLETED LUXURY RESULT. You MUST REVERSE ENGINEER this.`;
+                } else {
+                    reverseContext = "User selected Reverse Mode but didn't pick an image. Assume they want to Reverse Engineer a hypothetical final image.";
+                }
+            }
+
+            // --- FULL MASTER TEMPLATE LOGIC (SYSTEM PROMPT) ---
             const prompt = `
-                Role: Master Construction AI. 
-                Goal: Generate a JSON plan for "${proj}".
-                Context: Type: ${type}, Stages: ${stages}, Mode: ${currentMode}, Input: ${extra}.
+                Act as MASTER PRO Construction AI. Generate a JSON plan.
                 
-                MANDATORY RULES (DO NOT IGNORE):
-                1. FORMAT: Output MUST be strictly valid JSON. Keys: "images" (array), "videos" (array), "final_showcase" (string).
+                PROJECT DETAILS:
+                Name: ${proj}
+                Type: ${type}
+                Total Stages: ${stages}
+                Current Mode: ${currentMode}
+                User Instructions: ${extra}
+                ${reverseContext}
+
+                MASTER RULES (FROM TEMPLATE):
+                1. IMAGE FORMAT: Every single image prompt MUST contain "Ultra-realistic, 9:16 vertical ratio, 8k resolution".
+                2. VIDEO FORMAT: Every video prompt MUST describe "15+ professional workers, heavy machinery (cranes/mixers), wearing safety helmets and vests".
+                3. CLEANLINESS: No signboards, no text overlays, no 'under construction' banners in images.
                 
-                2. IMAGE LOGIC:
-                   - Every image prompt MUST contain: "Ultra-realistic, 9:16 vertical ratio, 8k".
-                   - NO text, NO signboards, NO banners in images.
-                   
-                3. VIDEO LOGIC:
-                   - Every video prompt MUST describe: "15+ professional workers, heavy machinery, safety gear".
-                   - Video logic is ALWAYS FORWARD (Construction happening), even in Reverse Mode.
-                   
-                4. MODE SPECIFIC LOGIC:
-                   - IF MODE 'A' (Strict): Follow user rules exactly.
-                   - IF MODE 'B' (Auto): Start from ruined site -> End at luxury masterpiece.
-                   - IF MODE 'R' (Reverse): 
-                     * Image 1 description MUST match a "Finished Final Building" (as if uploaded).
-                     * Subsequent Images go BACKWARDS (Demolition/Reverse) until the last image is a Ruined Site.
-                     
-                GENERATE JSON NOW.
+                LOGIC BY MODE:
+                
+                [IF MODE 'R' (REVERSE)]:
+                - The goal is REVERSE ENGINEERING.
+                - Image Array [0] (First Image) MUST describe the FINAL FINISHED BUILDING (The uploaded image).
+                - Image Array [Last] MUST describe the RUINED/EMPTY SITE.
+                - The sequence moves BACKWARDS: Final -> Remove Paint -> Remove Roof -> Demolition -> Ruin.
+                - BUT: Video prompts must remain FORWARD LOGIC (Construction Progress from Ruin to Final).
+                
+                [IF MODE 'A' or 'B' (FORWARD)]:
+                - Image Array [0] MUST describe the Ruined/Empty Site.
+                - Image Array [Last] MUST describe the Final Luxury Result.
+                - Video prompts: Forward construction logic.
+
+                OUTPUT FORMAT (Strict JSON Only):
+                {
+                  "images": ["Prompt 1", "Prompt 2", ...],
+                  "videos": ["Video 1", "Video 2", ...],
+                  "final_showcase": "Cinematic beauty shot prompt (Null if Reverse Mode)"
+                }
             `;
 
             try {
-                // Free Pollinations API
-                const seed = Math.floor(Math.random() * 99999);
+                // Free Pollinations API (No Key Needed)
+                const seed = Math.floor(Math.random() * 999999);
                 const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&seed=${seed}`);
                 
                 if (!response.ok) throw new Error("AI Busy");
                 
                 const text = await response.text();
-                // Clean and Parse JSON
+                // Clean JSON
                 const jsonStr = text.replace(/```json|```/g, '').trim();
                 const start = jsonStr.indexOf('{');
                 const end = jsonStr.lastIndexOf('}');
@@ -237,7 +288,7 @@
                 displayOutput(data);
 
             } catch (error) {
-                alert("Network Glitch! Please try again.");
+                alert("AI Server Busy. Please try again in 5 seconds.");
             } finally {
                 btn.classList.remove('hidden');
                 loader.classList.add('hidden');
@@ -265,20 +316,23 @@
                 </div>`;
             };
 
-            // Display Logic
+            // Intelligent Logic Display
             if(data.images) {
                 data.images.forEach((t, i) => {
                     let lbl = `Image ${i+1}`;
                     if(currentMode === 'R') {
-                        if(i === 0) lbl = "Image 1 (FINAL UPLOAD)";
-                        else if(i === data.images.length-1) lbl = "Image Last (RUIN)";
+                        if(i === 0) lbl = "Image 1 (FINAL UPLOAD ANALYSIS)";
+                        else if(i === data.images.length-1) lbl = "Image Last (ORIGINAL RUIN)";
                         else lbl = `Image ${i+1} (Reverse Step)`;
+                    } else {
+                        if(i === 0) lbl = "Image 1 (INITIAL STATE)";
+                        else if(i === data.images.length-1) lbl = "Image Last (FINAL RESULT)";
                     }
                     add(lbl, t, colorClass);
                 });
             }
 
-            if(data.videos) data.videos.forEach((t, i) => add(`Video ${i+1}`, t, 'border-gray-600'));
+            if(data.videos) data.videos.forEach((t, i) => add(`Video ${i+1} (Forward Construction)`, t, 'border-gray-600'));
             
             if(data.final_showcase && currentMode !== 'R') {
                 add("Cinematic Showcase", data.final_showcase, 'border-yellow-500');
