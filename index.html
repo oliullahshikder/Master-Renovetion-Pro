@@ -360,4 +360,24 @@
         }
 
         function displayOutput(data) {
-            const r = document.getElementById(
+            const r = document.getElementById('results');
+            r.innerHTML = "";
+            document.getElementById('outputArea').classList.remove('hidden');
+            let color = currentMode==='A'?'border-blue-500':currentMode==='B'?'border-purple-500':'border-orange-500';
+
+            const add = (l, t, b) => r.innerHTML += `<div class="bg-slate-900/90 p-4 rounded-xl border-l-4 ${b} mb-4 shadow-lg"><div class="flex justify-between mb-2"><span class="text-[9px] font-bold uppercase text-gray-400 bg-black/30 px-2 py-1 rounded">${l}</span><button onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.innerText)" class="text-gray-500 hover:text-white"><i class="fas fa-copy"></i></button></div><p class="text-xs text-gray-200 font-mono leading-relaxed">${t}</p></div>`;
+
+            if(data.images) data.images.forEach((t, i) => {
+                let lbl = `IMG ${i+1}`;
+                if(currentMode==='R') { if(i===0) lbl="FINAL (START)"; else if(i===data.images.length-1) lbl="RUIN (END)"; }
+                else { if(i===0) lbl="INITIAL"; else if(i===data.images.length-1) lbl="FINAL"; }
+                add(lbl, t, color);
+            });
+            if(data.videos) data.videos.forEach((t, i) => add(`VIDEO ${i+1} (ACTION)`, t, 'border-gray-600'));
+            if(data.final_showcase && currentMode!=='R') add("SHOWCASE", data.final_showcase, 'border-yellow-500');
+            
+            document.getElementById('outputArea').scrollIntoView({behavior:'smooth'});
+        }
+    </script>
+</body>
+</html>
