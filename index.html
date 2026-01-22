@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Master Pro AI (Fixed)</title>
+    <title>Master Pro: VEO-3 Ready</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -17,66 +17,120 @@
             background-image: radial-gradient(circle at 50% 0%, var(--glow) 0%, transparent 60%);
             color: #fff; min-height: 100vh; transition: 0.5s; overflow-x: hidden;
         }
+
+        /* 3D GLASS PANEL */
         .glass-panel {
-            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px;
-            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.9);
+            background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.9);
         }
+
+        /* --- 3D BUTTONS --- */
+        .mode-container { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 30px; }
         .mode-btn {
-            width: 80px; height: 80px; border-radius: 50%; border: none; background: #0f172a; color: #64748b;
-            font-weight: 800; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 10px 10px 20px rgba(0,0,0,0.5), -5px -5px 15px rgba(255,255,255,0.05); transition: 0.3s;
+            width: 80px; height: 80px; border-radius: 50%; border: none;
+            background: #0f172a; color: #64748b; font-weight: 800; font-size: 0.7rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.5), -5px -5px 15px rgba(255,255,255,0.05);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer; position: relative; overflow: hidden;
         }
         .mode-btn i { font-size: 1.5rem; margin-bottom: 5px; }
-        .mode-btn.active { transform: translateY(5px); color: white; }
+        
+        /* ACTIVE STATES */
+        .mode-btn.active { transform: translateY(5px); box-shadow: inset 5px 5px 10px rgba(0,0,0,0.6), inset -2px -2px 5px rgba(255,255,255,0.2); color: white; }
         .btn-a.active { background: radial-gradient(circle, #3b82f6, #1e3a8a); border: 2px solid #60a5fa; box-shadow: 0 0 20px #3b82f6; }
         .btn-b.active { background: radial-gradient(circle, #a855f7, #6b21a8); border: 2px solid #d8b4fe; box-shadow: 0 0 20px #a855f7; }
         .btn-r.active { background: radial-gradient(circle, #f97316, #9a3412); border: 2px solid #fdba74; box-shadow: 0 0 20px #f97316; }
+
+        /* INPUTS */
         .input-3d {
-            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: white; padding: 15px; width: 100%; outline: none; transition: 0.3s;
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px;
+            color: white; padding: 15px; width: 100%; outline: none; transition: 0.3s;
+            box-shadow: inset 3px 3px 6px rgba(0,0,0,0.5);
         }
         .input-3d:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--glow); background: rgba(0,0,0,0.5); }
+
+        /* UPLOAD BOX */
         .upload-label {
-            display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed rgba(255,255,255,0.3); border-radius: 15px; padding: 25px; cursor: pointer; background: rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px dashed rgba(255,255,255,0.3); border-radius: 15px; padding: 25px;
+            cursor: pointer; background: rgba(0,0,0,0.2); transition: 0.3s;
         }
-        .upload-label:hover { border-color: var(--primary); }
+        .upload-label:hover { border-color: var(--primary); background: rgba(255,255,255,0.05); }
+        .upload-label i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
+
+        /* GENERATE BUTTON */
         .gen-btn {
-            background: linear-gradient(135deg, var(--primary), #000); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; font-weight: 800; letter-spacing: 2px; font-size: 1.1rem; box-shadow: 0 10px 20px -5px var(--glow); transition: 0.4s;
+            background: linear-gradient(135deg, var(--primary), #000);
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 20px;
+            font-weight: 800; letter-spacing: 2px; font-size: 1.1rem;
+            box-shadow: 0 10px 20px -5px var(--glow); transition: 0.4s;
         }
+        .gen-btn:active { transform: scale(0.95); }
+
+        /* LOADER */
         .loader { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center justify-center">
 
-    <div class="text-center mb-8 z-10">
-        <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">MASTER PRO</h1>
-        <p class="text-[10px] text-gray-400 uppercase tracking-[0.5em] font-bold mt-2">Free Logic Engine</p>
+    <div class="text-center mb-8 relative z-10">
+        <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-2xl">
+            MASTER PRO
+        </h1>
+        <p class="text-[10px] text-gray-400 uppercase tracking-[0.5em] font-bold mt-2">VEO-3 Template Engine</p>
     </div>
 
     <div class="w-full max-w-lg glass-panel p-8 relative">
-        <div class="mode-container flex justify-between gap-4 mb-6">
-            <button onclick="setMode('A')" id="btnA" class="mode-btn btn-a active"><i class="fas fa-sliders-h"></i>STRICT</button>
-            <button onclick="setMode('B')" id="btnB" class="mode-btn btn-b"><i class="fas fa-magic"></i>AUTO</button>
-            <button onclick="setMode('R')" id="btnR" class="mode-btn btn-r"><i class="fas fa-upload"></i>REVERSE</button>
+        
+        <div class="mode-container">
+            <button onclick="setMode('A')" id="btnA" class="mode-btn btn-a active">
+                <i class="fas fa-sliders-h"></i>STRICT
+            </button>
+            <button onclick="setMode('B')" id="btnB" class="mode-btn btn-b">
+                <i class="fas fa-magic"></i>AUTO
+            </button>
+            <button onclick="setMode('R')" id="btnR" class="mode-btn btn-r">
+                <i class="fas fa-upload"></i>REVERSE
+            </button>
         </div>
 
         <div class="space-y-4">
-            <input type="text" id="project" placeholder="Project Name (e.g. Modern Villa)" class="input-3d">
+            <div>
+                <label class="text-[10px] uppercase font-bold text-gray-400 ml-2">Project Name</label>
+                <input type="text" id="project" placeholder="e.g. Modern Villa" class="input-3d">
+            </div>
+            
             <div id="dynamicInput"></div>
+
             <div class="grid grid-cols-2 gap-4">
-                <select id="type" class="input-3d bg-slate-900"><option>Renovation</option><option>New Build</option></select>
-                <select id="stages" class="input-3d bg-slate-900"><option value="6">6 Stages</option><option value="4">4 Stages</option></select>
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-gray-400 ml-2">Type</label>
+                    <select id="type" class="input-3d bg-slate-900">
+                        <option>Renovation</option>
+                        <option>New Build</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-gray-400 ml-2">Stages</label>
+                    <select id="stages" class="input-3d bg-slate-900">
+                        <option value="6">6 Stages</option>
+                        <option value="4">4 Stages</option>
+                        <option value="8">8 Stages</option>
+                    </select>
+                </div>
             </div>
         </div>
 
-        <button onclick="runOptimizedAI()" id="genBtn" class="w-full gen-btn mt-8 py-5 text-white flex justify-center items-center gap-3">
+        <button onclick="runMasterAI()" id="genBtn" class="w-full gen-btn mt-8 py-5 text-white flex justify-center items-center gap-3">
             <i class="fas fa-bolt"></i> GENERATE PLAN
         </button>
 
         <div id="loader" class="hidden mt-8 text-center">
             <div class="loader inline-block"></div>
-            <p class="text-xs text-gray-300 mt-4 animate-pulse font-mono">PROCESSING LOGIC...</p>
+            <p class="text-xs text-gray-300 mt-4 animate-pulse font-mono">ANALYZING TEMPLATE LOGIC...</p>
         </div>
     </div>
 
@@ -91,81 +145,140 @@
 
     <script>
         let currentMode = 'A';
-        let uploadedFile = "";
-        setMode('A');
+        let uploadedFileName = "";
+        
+        // Init
+        window.onload = function() { setMode('A'); }
 
         function setMode(mode) {
             currentMode = mode;
+            
+            // --- STATE RESET (Fixes data mixing) ---
+            document.getElementById('project').value = ""; // Clear Project Name
+            uploadedFileName = ""; // Clear Upload
+            // ---------------------------------------
+
+            // Reset Buttons
             ['A','B','R'].forEach(m => document.getElementById(`btn${m}`).classList.remove('active'));
             document.getElementById(`btn${mode}`).classList.add('active');
             
+            // Dynamic Theme Colors
             const root = document.documentElement.style;
-            if(mode === 'A') { root.setProperty('--primary', '#3b82f6'); root.setProperty('--glow', 'rgba(59, 130, 246, 0.6)'); }
-            else if(mode === 'B') { root.setProperty('--primary', '#a855f7'); root.setProperty('--glow', 'rgba(168, 85, 247, 0.6)'); }
-            else { root.setProperty('--primary', '#f97316'); root.setProperty('--glow', 'rgba(249, 115, 22, 0.6)'); }
-
             const area = document.getElementById('dynamicInput');
-            if(mode === 'A') area.innerHTML = `<textarea id="extra" placeholder="Your rules..." class="input-3d h-24"></textarea>`;
-            else if(mode === 'B') area.innerHTML = `<div class="p-4 border border-purple-500/30 rounded-2xl text-center bg-purple-900/10 text-xs text-purple-200">AI Auto-Design Active</div>`;
-            else area.innerHTML = `<label for="fUp" class="upload-label"><i class="fas fa-cloud-upload-alt text-2xl mb-2 text-orange-400"></i><span id="fTxt" class="text-xs text-gray-300">Tap to Upload Final Image</span></label><input type="file" id="fUp" class="hidden" onchange="fileSel(this)">`;
-        }
 
-        function fileSel(input) {
-            if(input.files[0]) {
-                uploadedFile = input.files[0].name;
-                document.getElementById('fTxt').innerHTML = `<span class="text-green-400">Selected: ${uploadedFile}</span>`;
+            if(mode === 'A') {
+                root.setProperty('--primary', '#3b82f6'); 
+                root.setProperty('--glow', 'rgba(59, 130, 246, 0.6)');
+                area.innerHTML = `<label class="text-[10px] uppercase font-bold text-gray-400 ml-2">Manual Stages</label>
+                <textarea id="extra" placeholder="Enter strictly defined stages..." class="input-3d h-24"></textarea>`;
+            } 
+            else if(mode === 'B') {
+                root.setProperty('--primary', '#a855f7'); 
+                root.setProperty('--glow', 'rgba(168, 85, 247, 0.6)');
+                area.innerHTML = `<div class="p-4 border border-purple-500/30 rounded-2xl text-center bg-purple-900/10">
+                    <p class="text-xs text-purple-200"><b>Auto Mode:</b> AI will self-design everything based on Project Name.</p>
+                </div>`;
+            } 
+            else {
+                root.setProperty('--primary', '#f97316'); 
+                root.setProperty('--glow', 'rgba(249, 115, 22, 0.6)');
+                area.innerHTML = `
+                <label for="fileUpload" class="upload-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <div id="fileText" class="text-xs text-gray-300 font-bold">Tap to Upload Final Image</div>
+                    <div class="text-[9px] text-gray-500 mt-1">AI will Reverse Engineer this</div>
+                </label>
+                <input type="file" id="fileUpload" class="hidden" accept="image/*" onchange="handleFile(this)">
+                `;
             }
         }
 
-        async function runOptimizedAI() {
+        function handleFile(input) {
+            if (input.files && input.files[0]) {
+                uploadedFileName = input.files[0].name;
+                document.getElementById('fileText').innerHTML = `<span class="text-green-400">Selected: ${uploadedFileName}</span>`;
+            }
+        }
+
+        async function runMasterAI() {
             const btn = document.getElementById('genBtn');
             const loader = document.getElementById('loader');
-            btn.classList.add('hidden'); loader.classList.remove('hidden'); document.getElementById('outputArea').classList.add('hidden');
+            
+            btn.classList.add('hidden');
+            loader.classList.remove('hidden');
+            document.getElementById('outputArea').classList.add('hidden');
 
             const proj = document.getElementById('project').value || "Project";
             const type = document.getElementById('type').value;
             const stages = document.getElementById('stages').value;
-            let extra = document.getElementById('extra') ? document.getElementById('extra').value : "";
+            let extra = "";
 
-            // --- OPTIMIZED COMPRESSED LOGIC (Fits in URL) ---
-            let logicInstruction = "";
-            if(currentMode === 'R') {
-                logicInstruction = `MODE REVERSE: Img1=FINAL FINISHED BLDG (Ref: ${uploadedFile||'User Upload'}). LastImg=RUINED SITE. Sequence: Final->DecorRemoval->PaintRemoval->Demolition->Ruin. Video Logic: FORWARD (Construction).`;
-            } else {
-                logicInstruction = `MODE FORWARD: Img1=RUINED/EMPTY SITE. LastImg=FINAL LUXURY BLDG. Video Logic: FORWARD.`;
+            if(currentMode === 'A') {
+                extra = document.getElementById('extra') ? document.getElementById('extra').value : "";
+            }
+
+            // --- TEMPLATE LOGIC INJECTION ---
+            // Constructing the Prompt based on the NEW Template
+            let logicBlock = "";
+
+            if (currentMode === 'A') {
+                logicBlock = `MODE A (STRICT): Follow user stages strictly: "${extra}". Do not deviate.`;
+            } 
+            else if (currentMode === 'B') {
+                logicBlock = `MODE B (AUTO): User gave NO details. Self-design everything. 
+                RULE: If Type='Renovation', Image-1 MUST be a RUINED EXISTING STRUCTURE. 
+                RULE: If Type='New Build', Image-1 MUST be EMPTY ABANDONED LAND.
+                Final Result: Luxury Masterpiece.`;
+            } 
+            else if (currentMode === 'R') {
+                // FORCE REVERSE LOGIC even without seeing the image
+                const fileRef = uploadedFileName ? `User uploaded file: '${uploadedFileName}'` : "User enabled Reverse Mode";
+                logicBlock = `MODE R (REVERSE): ${fileRef}. 
+                CRITICAL: Treat the uploaded/final image as the ABSOLUTE STARTING POINT (Image-1).
+                TASK: Reverse engineer backwards from Final to Ruin.
+                Image-1: Describe the FINAL FINISHED building (As if you see the upload).
+                Image-Last: Describe the RUINED/EMPTY SITE.
+                VIDEO LOGIC: Even though images go backwards, Video prompts must describe FORWARD construction progress.`;
             }
 
             const prompt = `
-                Act as Construction AI. Generate strictly valid JSON.
-                Context: ${proj}, ${type}, ${stages} stages.
-                LOGIC: ${logicInstruction} ${extra}
+                Act as MASTER PRO Construction AI. Generate JSON.
+                Project: ${proj}. Type: ${type}. Stages: ${stages}.
+                LOGIC: ${logicBlock}
                 
-                RULES:
-                1. Output Keys: "images"[], "videos"[], "final_showcase".
-                2. Img Prompts: Must have "Ultra-realistic, 9:16 vertical ratio, 8k". No text/signs.
-                3. Video Prompts: "15+ pro workers, PPE, heavy machinery".
+                MANDATORY RULES (FROM TEMPLATE):
+                1. FORMAT: JSON Only. Keys: "images"[], "videos"[], "final_showcase".
+                2. IMAGES: "Ultra-realistic, 9:16 vertical ratio, 8k". NO HUMANS, NO TOOLS in images.
+                3. VIDEOS: "15-20 professional workers, PPE, heavy machinery".
+                4. NO SIGNBOARDS allowed.
+                5. CLEANING RULE: Areas must be spotless after cleaning.
                 
-                Return ONLY JSON string.
+                Generate JSON now.
             `;
 
             try {
-                const seed = Math.floor(Math.random() * 9999);
-                const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&seed=${seed}`;
+                // Free Pollinations API
+                const seed = Math.floor(Math.random() * 99999);
+                const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&seed=${seed}`);
                 
-                const response = await fetch(url);
+                if (!response.ok) throw new Error("Busy");
+                
                 const text = await response.text();
+                const jsonStr = text.replace(/```json|```/g, '').trim();
                 
-                // Extract JSON reliably
-                const jsonMatch = text.match(/\{[\s\S]*\}/);
-                if(jsonMatch) {
-                    displayOutput(JSON.parse(jsonMatch[0]));
-                } else {
-                    throw new Error("Invalid Format");
-                }
-            } catch (e) {
-                alert("Server busy (Prompt too complex). Try simplified name.");
+                // Robust JSON Extraction
+                const start = jsonStr.indexOf('{');
+                const end = jsonStr.lastIndexOf('}');
+                if (start === -1 || end === -1) throw new Error("Invalid Format");
+                
+                const data = JSON.parse(jsonStr.substring(start, end + 1));
+                displayOutput(data);
+
+            } catch (error) {
+                alert("AI Engine Busy. Please try again.");
             } finally {
-                btn.classList.remove('hidden'); loader.classList.add('hidden');
+                btn.classList.remove('hidden');
+                loader.classList.add('hidden');
             }
         }
 
@@ -173,21 +286,42 @@
             const r = document.getElementById('results');
             r.innerHTML = "";
             document.getElementById('outputArea').classList.remove('hidden');
-            let bColor = currentMode==='A'?'border-blue-500':currentMode==='B'?'border-purple-500':'border-orange-500';
 
-            const add = (l, t, b) => r.innerHTML += `<div class="bg-slate-900/80 p-4 rounded-xl border-l-4 ${b} mb-4 relative shadow-lg"><div class="flex justify-between mb-1"><span class="text-[10px] font-bold uppercase text-gray-400">${l}</span><button onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.innerText)" class="text-gray-500"><i class="fas fa-copy"></i></button></div><p class="text-xs text-gray-200 font-mono">${t}</p></div>`;
+            let colorClass = currentMode==='A' ? 'border-blue-500' : currentMode==='B' ? 'border-purple-500' : 'border-orange-500';
 
-            if(data.images) data.images.forEach((t, i) => {
-                let lbl = `Image ${i+1}`;
-                if(currentMode === 'R') {
-                    if(i===0) lbl="Image 1 (FINAL UPLOAD)"; else if(i===data.images.length-1) lbl="Image Last (RUIN)";
-                }
-                add(lbl, t, bColor);
-            });
-            if(data.videos) data.videos.forEach((t, i) => add(`Video ${i+1}`, t, 'border-gray-600'));
-            if(data.final_showcase && currentMode!=='R') add("Showcase", data.final_showcase, 'border-yellow-500');
+            const add = (label, text, border) => {
+                r.innerHTML += `
+                <div class="bg-slate-900/80 p-4 rounded-xl border-l-4 ${border} relative mb-4 shadow-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">${label}</span>
+                        <button onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.innerText)" class="text-gray-500 hover:text-white transition"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <p class="text-xs text-gray-200 font-mono leading-relaxed">${text}</p>
+                </div>`;
+            };
+
+            if(data.images) {
+                data.images.forEach((t, i) => {
+                    let lbl = `Image ${i+1}`;
+                    if(currentMode === 'R') {
+                        if(i === 0) lbl = "Image 1 (FINAL UPLOAD - START)";
+                        else if(i === data.images.length-1) lbl = "Image Last (RUIN - END)";
+                        else lbl = `Image ${i+1} (Reverse Step)`;
+                    } else {
+                        if(i === 0) lbl = "Image 1 (INITIAL STATE)";
+                        else if(i === data.images.length-1) lbl = "Image Last (FINAL RESULT)";
+                    }
+                    add(lbl, t, colorClass);
+                });
+            }
+
+            if(data.videos) data.videos.forEach((t, i) => add(`Video ${i+1} (Forward Action)`, t, 'border-gray-600'));
             
-            document.getElementById('outputArea').scrollIntoView({behavior:'smooth'});
+            if(data.final_showcase && currentMode !== 'R') {
+                add("Beauty Showcase", data.final_showcase, 'border-yellow-500');
+            }
+
+            document.getElementById('outputArea').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>
