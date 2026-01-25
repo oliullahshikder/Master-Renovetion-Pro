@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Pro V33: Specific Logic</title>
+    <title>Master Pro V41: Unwrapping Logic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
+        /* --- UI REMAINS EXACTLY THE SAME --- */
         :root { --primary: #4f46e5; --glass: rgba(15, 23, 42, 0.98); }
         body {
             font-family: 'Rajdhani', sans-serif;
@@ -131,19 +132,17 @@
     </div>
     <script>
         const offlineDB = {
-            types: ["Bamboo Eco-Resort", "Modern Concrete Mosque", "Alpine Wooden Cabin", "Desert Sandstone Villa", "Tropical Beach House"],
-            sites: ["a Misty Rainforest in Brazil", "a Snowy Cliff in Norway", "a Riverbank in Bangladesh", "a Desert Oasis in Dubai"],
-            foundations: ["Bamboo Stilts over water", "Reinforced Concrete Base", "Natural Stone & Timber Piling", "Raised Mud Platform"],
-            walls: ["Woven Bamboo Lattice", "Polished White Concrete", "Pine Wood Planks", "Glass & Steel Frames"],
-            roofs: ["Traditional Thatch", "Golden Dome", "Slanted Tin Sheets", "Green Living Roof"],
-            landscapes: ["Water Lilies & Wooden Bridges", "Rose Gardens & Fountains", "Wildflowers & Pine Trees", "Infinity Pool"]
+            types: ["Bamboo Eco-Resort", "Modern Concrete Mosque", "Alpine Wooden Cabin", "Desert Sandstone Villa", "Tropical Beach House", "Japanese Zen Temple", "Moroccan Riad", "Stone Cottage", "Red Brick Farmhouse", "Marble Luxury Villa"],
+            sites: ["a Misty Rainforest in Brazil", "a Snowy Cliff in Norway", "a Riverbank in Bangladesh", "a Desert Oasis in Dubai", "a Mountain Peak in Nepal", "a Private Island in Maldives", "a Rocky Canyon in USA", "a Deep Jungle in Amazon", "a Village Field in Vietnam"],
+            foundations: ["Bamboo Stilts over water", "Reinforced Concrete Base", "Natural Stone & Timber Piling", "Raised Mud Platform", "Steel Beam Anchorage", "Stone Masonry Base"],
+            walls: ["Woven Bamboo Lattice", "Polished White Concrete", "Pine Wood Planks", "Red Brick with Patterns", "Glass & Steel Frames", "Rammed Earth", "Stacked Natural Stone", "White Marble Cladding"],
+            roofs: ["Traditional Thatch", "Golden Dome", "Slanted Tin Sheets", "Green Living Roof", "Terracotta Tiles", "Curved Copper Roof", "Slate Stone Tiles"],
+            landscapes: ["Water Lilies & Wooden Bridges", "Rose Gardens & Fountains", "Wildflowers & Pine Trees", "Infinity Pool & Palm Trees", "Zen Rock Garden", "Vegetable Garden with Rustic Fences", "Fruit Orchard", "Flower Beds"]
         };
         function generateOfflineConcept() {
             const pick = arr => arr[Math.floor(Math.random() * arr.length)];
             const concept = `Project: ${pick(offlineDB.types)}. Site: ${pick(offlineDB.sites)}. Foundation: ${pick(offlineDB.foundations)}. Walls: ${pick(offlineDB.walls)}. Roof: ${pick(offlineDB.roofs)}. Landscape: ${pick(offlineDB.landscapes)}.`;
-            const box = document.getElementById('auto_desc');
-            box.value = concept;
-            box.style.border = "1px solid #f59e0b"; setTimeout(() => box.style.border = "1px solid #334155", 500);
+            const box = document.getElementById('auto_desc'); box.value = concept; box.style.border = "1px solid #f59e0b"; setTimeout(() => box.style.border = "1px solid #334155", 500);
         }
         window.onload = function() { generateOfflineConcept(); };
         let currentMode = null; let outputData = { images: [], videos: [], final_showcase: "" }; let suggestionTimer = null; let fetchController = null;
@@ -162,57 +161,48 @@
         
         async function fetchSuggestion() {
             const btn = document.getElementById('sugg_text'); const pBtn = document.getElementById('sugg_btn'); const box = document.getElementById('auto_desc');
-            if(pBtn.disabled) return;
-            if(fetchController) fetchController.abort(); fetchController = new AbortController();
+            if(pBtn.disabled) return; if(fetchController) fetchController.abort(); fetchController = new AbortController();
             box.value = "Dreaming up a concept..."; pBtn.disabled = true; pBtn.style.background = "#8b5cf6"; 
             let time = 30; if(suggestionTimer) clearInterval(suggestionTimer);
             suggestionTimer = setInterval(() => { time--; btn.innerText = `WAIT ${time}s`; if(time <= 0) { clearInterval(suggestionTimer); fetchController.abort(); triggerBackup(btn, pBtn); } }, 1000);
             try {
-                // GET METHOD FOR STABILITY
-                const seed = Math.floor(Math.random() * 999999);
-                const prompt = "Generate a unique architectural concept. Format: 'Project: [Name]. Site: [Location]. Materials: [Details]. Landscape: [Details]'. Output plain text only.";
+                const seed = Math.floor(Math.random() * 999999); const prompt = "Generate a UNIQUE realistic architectural concept. VARY the materials (e.g., Concrete, Stone, Brick, Marble, Wood, Bamboo, Mud). VARY the location (e.g., Mountain cliff, Deep Forest, Urban rooftop, Lakeside, Snowy hill). VARY landscape (e.g., Vegetable garden, Fruit orchard, Flower beds). NO SCI-FI. Format: 'Project: [Name]. Site: [Location]. Materials: [Details]. Landscape: [Details]'. Output plain text only.";
                 const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&seed=${seed}`;
-                
-                const res = await fetch(url, { signal: fetchController.signal });
-                const text = await res.text();
-                
+                const res = await fetch(url, { signal: fetchController.signal }); const text = await res.text();
                 let cleanText = text.replace(/\{"role":.*?"content":"/s, '').replace(/"\}/s, '').replace(/[\{\}]/g, '').replace(/```json/g, '').replace(/```/g, '').trim();
-                if(cleanText.startsWith('"')) cleanText = cleanText.substring(1);
-                if(cleanText.endsWith('"')) cleanText = cleanText.substring(0, cleanText.length-1);
-                
+                if(cleanText.startsWith('"')) cleanText = cleanText.substring(1); if(cleanText.endsWith('"')) cleanText = cleanText.substring(0, cleanText.length-1);
                 if (cleanText.length < 10) throw new Error("Bad Response");
-
                 clearInterval(suggestionTimer); box.value = cleanText; btn.innerText = "ONLINE AI"; pBtn.style.background = "#22c55e"; pBtn.disabled = false;
             } catch(e) { if(e.name !== 'AbortError') { /* Wait */ } }
         }
         function triggerBackup(btnText, btnElem) { generateOfflineConcept(); btnText.innerText = "OFFLINE DATA"; btnElem.style.background = "#ef4444"; btnElem.disabled = false; }
-        
         function getContext() { if(currentMode === 'B') return document.getElementById('auto_desc').value; if(currentMode === 'R') return document.getElementById('rev_desc').value; let txt = ""; const c = document.getElementById('total_stages').value; for(let i=0; i<c; i++) txt += document.getElementById(`inp_${i}`).value + " "; return txt; }
         
+        // --- NEW LOGIC: UNWRAPPING (REVERSE) + CONSTRUCTION (VIDEO) ---
         function getMatInfo(text) {
             const t = text.toLowerCase();
-            let debris = "general debris";
-            let workerType = "construction workers";
-            let uniform = "standard safety vests and helmets";
+            let debris = "general debris"; let workerType = "construction workers"; let uniform = "standard safety vests and helmets";
             
             if(t.includes('bamboo')) {
-                debris = "rotting bamboo poles, dried thatch, and overgrown vines";
-                workerType = "skilled bamboo artisans";
-                uniform = "traditional light clothing with straw hats";
-                fActions = ['erecting a complete structural bamboo frame', 'weaving full, tight bamboo lattice walls enclosing the space', 'constructing a complete, multi-layered woven bamboo and thatch roof, covering the entire structure with no gaps', 'applying final protective varnish and finishing details to all bamboo elements'];
+                debris = "rotting bamboo poles, dried thatch, and overgrown vines"; workerType = "skilled bamboo artisans"; uniform = "traditional light clothing with straw hats";
+                fActions = ['erecting main bamboo structural poles AND marking out garden pathways', 'weaving bamboo lattice walls around existing window/door frames AND digging the pond area', 'constructing the thatched roof frame AND installing simple wooden garden bridges', 'applying final varnish to bamboo AND planting tropical plants in the gardens'];
             } else if(t.includes('wood')) {
-                debris = "decaying timber planks, rusty nails, and fallen leaves";
-                workerType = "professional carpenters";
-                uniform = "blue overalls and tool belts";
-                fActions = ['erecting the complete main timber column and beam structure', 'installing complete polished wooden plank siding across all exterior walls', 'constructing a finished wooden truss roof system with complete shingle covering', 'finishing all wooden surfaces with polish and installing final trim'];
+                debris = "decaying timber planks, rusty nails, and fallen leaves"; workerType = "professional carpenters"; uniform = "blue overalls and tool belts";
+                fActions = ['erecting main timber columns and beams AND excavating the pool area', 'installing wooden siding around window/door openings AND pouring the concrete pool shell', 'constructing the wooden truss roof system AND installing pool plumbing and decking frame', 'finishing exterior wood surfaces with polish AND tiling the pool and landscaping'];
             } else {
-                debris = "heavy concrete rubble, broken bricks, and rusty rebar";
-                workerType = "construction masons";
-                uniform = "yellow safety helmets and high-vis vests";
-                fActions = ['installing complete reinforced concrete pillars and beams', 'bricklaying and plastering complete, solid concrete walls around the entire skeleton', 'casting a solid, finished reinforced concrete roof slab over the entire structure', 'painting and finishing all concrete surfaces completely'];
+                debris = "heavy concrete rubble, broken bricks, and rusty rebar"; workerType = "construction masons"; uniform = "yellow safety helmets and high-vis vests";
+                fActions = ['installing reinforced concrete pillars/beams AND leveling surrounding terraces', 'bricklaying and plastering walls around window/door frames AND building concrete planter boxes', 'casting the concrete roof slab AND installing exterior boundary wall foundations', 'painting exterior walls AND finishing hardscapes and planting trees'];
             }
             
-            let rActions = ["COMPLETELY removing landscaping", "Dismantling ALL roofing", "Demolishing ALL walls", "Dismantling frame", "Excavating foundation"];
+            // LOGICAL UNWRAPPING ACTIONS
+            let rActions = [
+                "Removing final landscaping, lighting, and furniture to reveal the bare structure",
+                "Unwrapping/Removing the roof covering and trusses to expose the open sky",
+                "Removing all wall finishes, cladding, and windows to reveal the structural frame",
+                "Dismantling the main structural frame/pillars to leave only the foundation",
+                "Excavating and removing the foundation to leave the raw site"
+            ];
+            
             return { name: t.includes('bamboo')?'Bamboo':(t.includes('wood')?'Wood':'Concrete'), fActions: fActions, rActions: rActions, debris: debris, workerType: workerType, uniform: uniform };
         }
 
@@ -220,48 +210,57 @@
             const ctx = getContext(); const stages = parseInt(document.getElementById('total_stages').value);
             const type = document.getElementById('project_type').value; const mat = getMatInfo(ctx);
             const imgs = [], vids = [];
-            for(let i=0; i<stages; i++) {
-                let p = "";
-                // FUTURE AWARE CONTEXT
-                const projectGoal = `[PROJECT GOAL: ${ctx}]`; 
+            const noPeople = ", NO PEOPLE, NO WORKERS, photorealistic architectural photography, 9:16 vertical ratio";
 
+            for(let i=0; i<stages; i++) {
+                let p = ""; const projectGoal = `[PROJECT GOAL: ${ctx}]`; 
                 if(currentMode === 'R') {
-                    if(i===0) p = `PROMPT: (Stage 1 - Final) ${projectGoal}. FINISHED PROJECT. Complete structure with mature landscaping, full lighting, furniture, and all details perfectly in place.`;
-                    else if(i===stages-1) p = `PROMPT: (Stage ${i+1} - Site Clear) ${projectGoal}. EDIT PREVIOUS IMAGE: The site is completely cleared. All structures, foundations, and debris are removed. Only bare, natural ground remains.`;
-                    else {
-                        let actionIndex = (i - 1) % mat.rActions.length; 
-                        p = `PROMPT: (Stage ${i+1} - Demolition) ${projectGoal}. EDIT PREVIOUS IMAGE: ${mat.rActions[actionIndex]}. Leaving only the underlying structure. Keep background intact.`;
+                    // --- REVERSE MODE: UNWRAPPING LOGIC ---
+                    if(i===0) {
+                        p = `PROMPT: (Stage 1 - Final) ${projectGoal}. FINISHED PROJECT. Complete structure with mature landscaping, full lighting, furniture, and all details perfectly in place.${noPeople}`;
+                    } else if(i===stages-1) {
+                        p = `PROMPT: (Stage ${i+1} - Raw Site) ${projectGoal}. LOGICAL UNWRAPPING: The site is returned to its pre-construction state. Empty raw land. No debris.${noPeople}`;
+                    } else {
+                        // Map stages to unwrapping actions (Reverse Order)
+                        let actionIndex = (i - 1) % mat.rActions.length;
+                        p = `PROMPT: (Stage ${i+1} - Unwrapping) ${projectGoal}. LOGICAL UNWRAPPING: ${mat.rActions[actionIndex]}. Show the structural state BEFORE this layer was installed. Keep surrounding environment.${noPeople}`;
                     }
                 } else {
                     if(i===0) {
-                        p = type === 'Renovation' ? `PROMPT: (Stage 1 - Base State) ${projectGoal}. [CURRENT STATE: RUINS]. A completely ruined and abandoned ${mat.name.toLowerCase()} skeleton. Broken, mossy. NO roof, NO walls. The site is overgrown. Context: ${ctx}` : `PROMPT: (Stage 1 - Base State) ${projectGoal}. [CURRENT STATE: EMPTY LAND]. A vacant plot of land ready for construction. No building yet.`;
+                        p = type === 'Renovation' ? `PROMPT: (Stage 1 - Base) ${projectGoal}. [CURRENT: RUINS]. A completely ruined ${mat.name} skeleton. Broken. Isolated location, NO other buildings in background.${noPeople}` : `PROMPT: (Stage 1 - Base) ${projectGoal}. [CURRENT: EMPTY LAND]. Vacant plot. Isolated location, NO nearby buildings.${noPeople}`;
                     } else if(i===1) {
-                        // SPECIFIC DEBRIS CLEARING
-                        p = type === 'Renovation' ? `PROMPT: (Stage 2 - Prep) ${projectGoal}. EDIT PREVIOUS IMAGE: Site is cleaned. Removing ${mat.debris}. The skeleton stands clean.` : `PROMPT: (Stage 2 - Foundation) ${projectGoal}. EDIT PREVIOUS IMAGE: Foundation pits dug and base poured. No walls yet.`;
+                        p = type === 'Renovation' ? `PROMPT: (Stage 2 - Prep) ${projectGoal}. EDIT PREVIOUS IMAGE: Aggressive site clearance. Remove ALL piles of debris, fallen materials, rubble, broken parts on the ground, and vegetation. The site floor must be completely clear dirt. CRITICAL: The ONLY thing remaining should be the bare, standing structural skeleton (major walls and pillars) ready for renovation.${noPeople}` : `PROMPT: (Stage 2 - Foundation) ${projectGoal}. EDIT PREVIOUS IMAGE: Foundation pits dug and base poured.${noPeople}`;
                     } else if(i===stages-1) {
-                        p = `PROMPT: (Final - Completion) ${projectGoal}. EDIT PREVIOUS IMAGE: The structure is completely finished. Luxury finishing, landscaping, and lighting added. Project complete.`;
+                        p = `PROMPT: (Final) ${projectGoal}. EDIT PREVIOUS IMAGE: Complete structure. Luxury finish, landscaping, lighting.${noPeople}`;
                     } else {
                         let act = mat.fActions[(i-2)%mat.fActions.length];
-                        p = `PROMPT: (Stage ${i+1} - Build) ${projectGoal}. EDIT PREVIOUS IMAGE: [CURRENT ACTION: ${act}]. The element is completely installed with no gaps. Keep previous elements.`;
+                        p = `PROMPT: (Stage ${i+1} - Build) ${projectGoal}. EDIT PREVIOUS IMAGE: [ACTION: ${act}]. Respect openings.${noPeople}`;
                     }
                 }
-                imgs.push(p + ", 9:16 vertical ratio, hyper-realistic architecture style");
+                imgs.push(p);
             }
 
             for(let i=0; i<stages-1; i++) {
-                let vAct = "";
-                let workers = mat.workerType;
-                let outfit = mat.uniform;
-                
-                if(currentMode === 'R') {
-                    vAct = `demolition crew in protective gear actively demolishing and completely removing major structural parts and clearing ${mat.debris}`;
-                } else {
-                    let actionDesc = i===0 ? `completely clearing ${mat.debris} and leveling the site` : `${mat.fActions[(i-1)%mat.fActions.length].replace('ing a complete', 'ing').replace('full, tight', 'ing')} and completing the work`;
-                    vAct = `${workers} wearing ${outfit} actively engaged in: ${actionDesc}`;
+                let vAct = ""; let workers = mat.workerType; let outfit = mat.uniform;
+                if(currentMode === 'R') { 
+                    // --- VIDEO LOGIC: ALWAYS FORWARD (CONSTRUCTION) ---
+                    // Even in reverse mode, the video shows the *building* process of the layer we just "unwrapped" in the images.
+                    // If Image 2 removed the roof, Video 2 shows "Building the roof".
+                    // We map the unwrapping stage back to the construction action.
+                    let constructionIndex = (mat.fActions.length - 1) - ((i - 1) % mat.fActions.length);
+                    if (constructionIndex < 0) constructionIndex = 0;
+                    // For the very first video (connecting Final to Stage 2), it's about finishing details
+                    let actionDesc = (i===0) ? "installing final finishes, lighting, and landscaping details" : mat.fActions[i % mat.fActions.length].replace('AND', 'and'); 
+                    
+                    vAct = `${workers} wearing ${outfit} actively constructing: ${actionDesc}`; 
+                } 
+                else { 
+                    let actionDesc = i===0 ? `cleaning crew actively clearing EVERYTHING: removing all debris, garbage, vines, and broken parts, leaving only the skeleton` : `${mat.fActions[(i-1)%mat.fActions.length]}`; 
+                    vAct = `${workers} wearing ${outfit} actively engaged in: ${actionDesc}`; 
                 }
                 vids.push(`VIDEO PROMPT: Cinematic Time-lapse shot of ${vAct}. No voiceover, ambient sound only.`);
             }
-            return { images: imgs, videos: vids, final_showcase: `FINAL SHOWCASE VIDEO PROMPT: Cinematic tour of the finished ${currentMode==='R'?'site':'project'}. No voiceover, ambient sound only. 4k.` };
+            return { images: imgs, videos: vids, final_showcase: `FINAL SHOWCASE VIDEO PROMPT: Cinematic tour of the finished project. No people. 4k.` };
         }
         
         async function generate(source) {
@@ -285,14 +284,12 @@
             const action = document.getElementById('edit_action').value; const stageNum = parseInt(document.getElementById('edit_stage_num').value); const instr = document.getElementById('edit_instr').value;
             if(!stageNum || (action === 'add' && !instr)) return alert("Please fill details!");
             document.getElementById('loader').classList.remove('hidden'); document.getElementById('output-box').classList.add('hidden');
-            // FUTURE AWARE EDIT
-            const currentContext = getContext();
-            const projectContext = `[PROJECT GOAL: ${currentContext}]`;
-            
+            const currentContext = getContext(); const projectContext = `[PROJECT GOAL: ${currentContext}]`;
+            const noPeople = ", NO PEOPLE, NO WORKERS, photorealistic";
             if(action === 'remove') { if(stageNum > 0 && stageNum <= outputData.images.length) { outputData.images.splice(stageNum - 1, 1); if(stageNum <= outputData.videos.length) outputData.videos.splice(stageNum - 1, 1); } } 
             else {
-                try { const res = await fetch('https://text.pollinations.ai/', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ messages: [{ role: 'system', content: `Convert to prompt: "${instr}". Context: ${currentContext}. Format: "EDIT PREVIOUS IMAGE: Fully complete the following: [Details]. Keep surrounding elements intact.". NO MARKDOWN.` }], model: 'openai' }) }); let newText = await res.text(); outputData.images.splice(stageNum, 0, `PROMPT: (Stage ${stageNum + 1} - Edited) ${projectContext}. ${newText}, 9:16 vertical ratio`); outputData.videos.splice(stageNum, 0, `VIDEO PROMPT: Cinematic Time-lapse of workers executing: ${instr}. 4k.`); } 
-                catch(e) { outputData.images.splice(stageNum, 0, `PROMPT: (Stage ${stageNum + 1} - Edited) ${projectContext}. EDIT PREVIOUS IMAGE: Fully complete: ${instr}. Keep previous elements. 9:16 vertical ratio`); outputData.videos.splice(stageNum, 0, `VIDEO PROMPT: Cinematic Time-lapse of workers doing: ${instr}. 4k.`); }
+                try { const res = await fetch('https://text.pollinations.ai/', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ messages: [{ role: 'system', content: `Convert to prompt: "${instr}". Context: ${currentContext}. Format: "EDIT PREVIOUS IMAGE: Fully complete the following: [Details].". NO MARKDOWN.` }], model: 'openai' }) }); let newText = await res.text(); outputData.images.splice(stageNum, 0, `PROMPT: (Stage ${stageNum + 1} - Edited) ${projectContext}. ${newText}${noPeople}`); outputData.videos.splice(stageNum, 0, `VIDEO PROMPT: Cinematic Time-lapse of workers executing: ${instr}. 4k.`); } 
+                catch(e) { outputData.images.splice(stageNum, 0, `PROMPT: (Stage ${stageNum + 1} - Edited) ${projectContext}. EDIT PREVIOUS IMAGE: Fully complete: ${instr}${noPeople}`); outputData.videos.splice(stageNum, 0, `VIDEO PROMPT: Cinematic Time-lapse of workers doing: ${instr}. 4k.`); }
             }
             outputData.images = outputData.images.map((img, i) => img.replace(/PROMPT: \(Stage \d+/, `PROMPT: (Stage ${i + 1}`)); setTimeout(() => { showResult(outputData, 'online'); }, 1000);
         }
