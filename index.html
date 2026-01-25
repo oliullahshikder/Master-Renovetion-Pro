@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Pro V11: Perfect Video Logic</title>
+    <title>Master Pro V33: Specific Logic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -24,93 +24,40 @@
             width: 100%; max-width: 900px; padding: 30px 20px;
             position: relative; z-index: 1;
         }
-        
-        /* 3D BUTTONS */
         .android-btn {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             border-radius: 16px; padding: 10px; cursor: pointer; 
             width: 100%; height: 100px; border: none; user-select: none;
-            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative; top: 0; z-index: 50;
         }
         .btn-strict { background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%); box-shadow: 0px 6px 0px #075985; }
         .btn-auto { background: linear-gradient(180deg, #d946ef 0%, #a21caf 100%); box-shadow: 0px 6px 0px #701a75; }
         .btn-reverse { background: linear-gradient(180deg, #f97316 0%, #c2410c 100%); box-shadow: 0px 6px 0px #7c2d12; }
-
-        .android-btn:active, .android-btn.selected { 
-            top: 6px; box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5); 
-            filter: brightness(1.1); border: 2px solid white;
-        }
-
-        /* WORKSPACE CONTAINER */
-        #workspace-area {
-            display: none; margin-top: 25px; padding-top: 20px;
-            border-top: 1px dashed rgba(255,255,255,0.15);
-            animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* INPUTS */
+        .android-btn:active, .android-btn.selected { transform: translateY(6px); box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5) !important; filter: brightness(1.1); border: 2px solid white; }
+        #workspace-area { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 0; border-top: 1px dashed rgba(255,255,255,0); }
+        #workspace-area.open { max-height: 3000px; opacity: 1; margin-top: 25px; padding-top: 20px; border-top: 1px dashed rgba(255,255,255,0.15); }
         .input-3d { background: rgba(0,0,0,0.4); border: 1px solid #334155; border-radius: 10px; color: white; transition: 0.2s; }
         .input-3d:focus { border-color: #38bdf8; background: rgba(0,0,0,0.8); outline: none; }
-        
-        /* ACTION BUTTONS */
-        .offline-sugg-btn { 
-            background: linear-gradient(90deg, #f59e0b, #d97706); 
-            padding: 8px 15px; border-radius: 8px; 
-            font-size: 11px; font-weight: bold; cursor: pointer; 
-            box-shadow: 0 4px 0 #92400e; color: white;
-            transition: 0.1s; position: relative; z-index: 20;
-        }
-        .offline-sugg-btn:active { transform: translateY(4px); box-shadow: none; }
-
-        .suggestion-btn { 
-            background: linear-gradient(90deg, #8b5cf6, #ec4899); 
-            padding: 8px 15px; border-radius: 8px; 
-            font-size: 11px; font-weight: bold; cursor: pointer; 
-            box-shadow: 0 4px 0 #be185d; color: white;
-            transition: 0.1s; position: relative; z-index: 20;
-        }
-        .suggestion-btn:active { transform: translateY(4px); box-shadow: none; }
-
-        .round-3d-btn { 
-            width: 70px; height: 70px; border-radius: 12px; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            border: 1px solid rgba(255,255,255,0.1); cursor: pointer; 
-            color: white; font-weight: bold; font-size: 10px;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.5); transition: 0.1s;
-        }
-        .round-3d-btn:active { transform: translateY(5px); box-shadow: none; }
-        
+        .offline-sugg-btn, .suggestion-btn, .upload-btn, .analyze-btn { padding: 8px 15px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: transform 0.1s; position: relative; z-index: 20; color: white; user-select: none; }
+        .offline-sugg-btn { background: linear-gradient(90deg, #f59e0b, #d97706); box-shadow: 0 4px 0 #92400e; }
+        .suggestion-btn { background: linear-gradient(90deg, #8b5cf6, #ec4899); box-shadow: 0 4px 0 #be185d; }
+        .upload-btn { background: #334155; border: 1px solid #475569; box-shadow: 0 4px 0 #1e293b; display: flex; align-items: center; gap: 5px; }
+        .analyze-btn { background: linear-gradient(90deg, #06b6d4, #3b82f6); box-shadow: 0 4px 0 #0e7490; display: flex; align-items: center; gap: 5px; }
+        .upload-btn:active, .analyze-btn:active, .offline-sugg-btn:active, .suggestion-btn:active { transform: translateY(4px); box-shadow: none !important; }
+        .round-3d-btn { width: 70px; height: 70px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; color: white; font-weight: bold; font-size: 10px; box-shadow: 0 5px 0 rgba(0,0,0,0.5); transition: 0.1s; }
+        .round-3d-btn:active { transform: translateY(5px); box-shadow: none !important; }
         .btn-reset { background: #ef4444; box-shadow: 0 5px 0 #991b1b; }
         .btn-offline-gen { background: #eab308; box-shadow: 0 5px 0 #a16207; }
-        .btn-online-gen { flex-grow: 1; height: 70px; background: linear-gradient(90deg, #3b82f6, #6366f1); border-radius: 12px; font-weight: bold; font-size: 14px; box-shadow: 0 5px 0 #3730a3; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-online-gen:active { transform: translateY(5px); box-shadow: none; }
-
-        .btn-edit { background: #10b981; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 4px 0 #065f46; }
-        .btn-edit:active { transform: translateY(4px); box-shadow: none; }
-
-        /* INDIVIDUAL COPY BUTTON STYLE */
-        .mini-copy-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #38bdf8;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+        .btn-online-gen { flex-grow: 1; height: 70px; background: linear-gradient(90deg, #3b82f6, #6366f1); border-radius: 12px; font-weight: bold; font-size: 14px; box-shadow: 0 5px 0 #3730a3; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.1s; }
+        .btn-online-gen:active { transform: translateY(5px); box-shadow: none !important; }
+        .btn-edit { background: #10b981; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 4px 0 #065f46; width: 100%; display: flex; align-items: center; justify-content: center; transition: 0.1s; }
+        .btn-edit:active { transform: translateY(4px); box-shadow: none !important; }
+        .mini-copy-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
         .mini-copy-btn:hover { background: #3b82f6; color: white; border-color: #60a5fa; transform: translateY(-1px); }
         .mini-copy-btn:active { transform: translateY(1px); }
-
         .hidden { display: none !important; }
         .prompt-card { background: #0f172a; border-left: 4px solid; padding: 15px; margin-bottom: 10px; border-radius: 8px; position: relative; }
-        
         .cyber-spinner { width: 50px; height: 50px; border-radius: 50%; background: conic-gradient(#3b82f6, #ec4899, #eab308, #3b82f6); animation: spin 1s linear infinite; padding: 4px; margin: 0 auto; }
         .cyber-spinner-inner { background: #0f172a; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -122,382 +69,232 @@
             <h1 class="text-5xl font-extrabold text-white drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]">MASTER PRO</h1>
             <p class="text-[10px] text-gray-400 uppercase tracking-[0.5em] mt-1">ARCHITECTURAL LOGIC ENGINE</p>
         </div>
-
         <div class="grid grid-cols-3 gap-3 w-full mb-2">
-            <button onclick="toggleMode('A')" id="btn-a" class="android-btn btn-strict">
-                <i class="fas fa-list-ol text-2xl mb-2 text-white"></i>
-                <span class="text-[10px] font-bold text-white tracking-widest">STRICT</span>
-            </button>
-            <button onclick="toggleMode('B')" id="btn-b" class="android-btn btn-auto">
-                <i class="fas fa-magic text-2xl mb-2 text-white"></i>
-                <span class="text-[10px] font-bold text-white tracking-widest">AUTO</span>
-            </button>
-            <button onclick="toggleMode('R')" id="btn-r" class="android-btn btn-reverse">
-                <i class="fas fa-history text-2xl mb-2 text-white"></i>
-                <span class="text-[10px] font-bold text-white tracking-widest">REVERSE</span>
-            </button>
+            <button onclick="toggleMode('A')" id="btn-a" class="android-btn btn-strict"><i class="fas fa-list-ol text-2xl mb-2 text-white"></i><span class="text-[10px] font-bold text-white tracking-widest">STRICT</span></button>
+            <button onclick="toggleMode('B')" id="btn-b" class="android-btn btn-auto"><i class="fas fa-magic text-2xl mb-2 text-white"></i><span class="text-[10px] font-bold text-white tracking-widest">AUTO</span></button>
+            <button onclick="toggleMode('R')" id="btn-r" class="android-btn btn-reverse"><i class="fas fa-history text-2xl mb-2 text-white"></i><span class="text-[10px] font-bold text-white tracking-widest">REVERSE</span></button>
         </div>
-
         <div id="workspace-area" class="w-full">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                 <div><label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Project Name</label><input type="text" id="project_name" placeholder="Project Name" class="w-full input-3d p-3 text-sm"></div>
                 <div><label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Type</label><select id="project_type" class="w-full input-3d p-3 bg-[#0f172a] text-sm"><option value="Renovation">Renovation (Fix Old)</option><option value="Construction">Construction (Build New)</option></select></div>
                 <div class="md:col-span-2"><label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Stages</label><select id="total_stages" onchange="renderStrictInputs()" class="w-full input-3d p-3 bg-[#0f172a] text-sm"><option value="3">3 Stages</option><option value="4">4 Stages</option><option value="5">5 Stages</option><option value="6" selected>6 Stages</option><option value="7">7 Stages</option></select></div>
             </div>
-            
             <div id="container-b" class="mb-4 hidden">
                 <div class="flex justify-between items-center mb-2">
                     <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">Concept Description</label>
                     <div class="flex gap-2">
-                        <button onclick="useBackup()" class="offline-sugg-btn"><i class="fas fa-database"></i> BACKUP</button>
+                        <button onclick="generateOfflineConcept()" class="offline-sugg-btn"><i class="fas fa-database"></i> BACKUP</button>
                         <button id="sugg_btn" onclick="fetchSuggestion()" class="suggestion-btn"><i class="fas fa-bolt"></i> <span id="sugg_text">ONLINE IDEA</span></button>
                     </div>
                 </div>
-                <textarea id="auto_desc" class="w-full input-3d p-3 h-32 text-xs font-mono leading-relaxed" placeholder="Click 'ONLINE IDEA' for a detailed architectural concept..."></textarea>
+                <textarea id="auto_desc" class="w-full input-3d p-3 h-32 text-xs font-mono leading-relaxed" placeholder="Click 'ONLINE IDEA' for a global concept..."></textarea>
             </div>
-
             <div id="container-a" class="space-y-2 mb-4 hidden"></div>
-
             <div id="container-r" class="mb-4 hidden">
-                <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">Final Image Description</label>
-                <textarea id="rev_desc" class="w-full input-3d p-3 h-24 text-sm" placeholder="Describe the finished building..."></textarea>
+                <div class="flex justify-between items-center mb-2">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">Final Image Analysis</label>
+                    <div class="flex gap-2 items-center">
+                        <input type="file" id="img_upload" class="hidden" accept="image/*" onchange="handleImageUpload()">
+                        <button onclick="document.getElementById('img_upload').click()" class="upload-btn"><i class="fas fa-camera"></i> <span id="upload_text">UPLOAD</span></button>
+                        <button id="analyze_btn" onclick="analyzeImage()" class="analyze-btn"><i class="fas fa-search"></i> ANALYZE AI</button>
+                    </div>
+                </div>
+                <div id="analysis_indicator" class="w-full text-center hidden mb-2"><span id="source_badge" class="text-[10px] font-bold px-3 py-1 rounded tracking-widest border"></span></div>
+                <div id="preview_area" class="w-full mb-2 hidden flex justify-center"><img id="img_preview" class="w-32 h-32 object-cover rounded-lg border border-gray-600" src=""></div>
+                <textarea id="rev_desc" class="w-full input-3d p-3 h-24 text-sm" placeholder="Upload image to analyze or describe the finished building manually..."></textarea>
             </div>
-            
             <div class="flex items-center gap-2 mt-4">
                 <button onclick="location.reload()" class="round-3d-btn btn-reset"><i class="fas fa-trash text-xl"></i>Reset</button>
                 <button onclick="generate('online')" class="btn-online-gen text-white"><i class="fas fa-cloud-bolt mr-2"></i> GENERATE ONLINE</button>
                 <button onclick="generate('offline')" class="round-3d-btn btn-offline-gen"><i class="fas fa-microchip text-xl"></i>Offline</button>
             </div>
         </div>
-
         <div id="result-section" class="w-full mt-8 hidden">
-            <div id="loader" class="text-center mb-8 hidden">
-                <div class="cyber-spinner"><div class="cyber-spinner-inner"><span id="timer">30s</span></div></div>
-                <p class="text-xs text-blue-300 mt-4 font-mono animate-pulse">PROCESSING DATA...</p>
-            </div>
-            
+            <div id="loader" class="text-center mb-8 hidden"><div class="cyber-spinner"><div class="cyber-spinner-inner"><span id="timer">30s</span></div></div><p class="text-xs text-blue-300 mt-4 font-mono animate-pulse">PROCESSING DATA...</p></div>
             <div id="output-box" class="hidden space-y-4">
-                <div class="flex justify-between items-center border-b border-gray-700 pb-2">
-                    <h3 class="text-lg font-bold text-white">RESULTS</h3>
-                    <span id="badge" class="text-[9px] font-bold px-2 py-1 rounded border"></span>
-                </div>
-                
+                <div class="flex justify-between items-center border-b border-gray-700 pb-2"><h3 class="text-lg font-bold text-white">RESULTS</h3><span id="badge" class="text-[9px] font-bold px-2 py-1 rounded border"></span></div>
                 <div id="content-area" class="space-y-4"></div>
-                
-                <button onclick="copyAll()" class="w-full bg-gray-800 p-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white mt-4 border border-gray-700 flex justify-center items-center gap-2 transition-all hover:border-blue-500 hover:bg-gray-700">
-                    <i class="fas fa-copy"></i> COPY ALL DATA
-                </button>
-
+                <button onclick="copyAll()" class="w-full bg-gray-800 p-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white mt-4 border border-gray-700 flex justify-center items-center gap-2 transition-all hover:border-blue-500 hover:bg-gray-700"><i class="fas fa-copy"></i> COPY ALL DATA</button>
                 <div class="bg-[#0f172a] p-4 rounded-lg border border-gray-700 mt-4">
-                    <label class="text-[10px] text-gray-400 font-bold uppercase mb-2 block">Sequence Editor</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="edit_txt" class="w-full input-3d p-2 text-xs" placeholder="e.g. Add pool after stage 3">
-                        <button onclick="runEdit()" class="btn-edit text-white">APPLY</button>
+                    <label class="text-[10px] text-gray-400 font-bold uppercase mb-2 block flex items-center gap-2"><i class="fas fa-robot text-green-400"></i> Smart AI Sequence Editor</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+                        <select id="edit_action" class="input-3d p-2 text-xs bg-[#1e293b]"><option value="add">➕ Add New Stage</option><option value="remove">❌ Remove Stage</option></select>
+                        <input type="number" id="edit_stage_num" class="input-3d p-2 text-xs" placeholder="After Stage #">
+                        <input type="text" id="edit_instr" class="col-span-2 input-3d p-2 text-xs" placeholder="Instruction (e.g. Add a pool)">
                     </div>
+                    <button onclick="applySmartEdit()" class="btn-edit text-white"><i class="fas fa-bolt mr-2"></i> APPLY AI EDIT</button>
                 </div>
             </div>
         </div>
-
-        <div class="mt-10 pt-6 border-t border-gray-800 text-center w-full">
-            <p class="text-[10px] text-gray-500 tracking-[0.3em] mb-1">DEVELOPED BY</p>
-            <h2 class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 tracking-wider drop-shadow-lg">OLIULLAH SHIKDER JEWEL</h2>
-        </div>
+        <div class="mt-10 pt-6 border-t border-gray-800 text-center w-full"><p class="text-[10px] text-gray-500 tracking-[0.3em] mb-1">DEVELOPED BY</p><h2 class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 tracking-wider drop-shadow-lg">OLIULLAH SHIKDER JEWEL</h2></div>
     </div>
-
     <script>
-        // --- 1. DATA & VARIABLES ---
-        const backups = [
-            "Project: Eco-Bamboo Resort. Foundation: Bamboo Stilts on water. Walls: Woven Bamboo lattice. Roof: Traditional Thatch. Landscape: Water lilies and wooden walkways.",
-            "Project: Modern Concrete Mosque. Foundation: Heavy Concrete Base. Walls: White Brick with geometric holes. Roof: Golden Dome. Landscape: Rose garden and fountain.",
-            "Project: Hillside Wooden Cottage. Foundation: Stone & Timber posts. Walls: Pine Wood planks. Roof: Slanted Tin roof. Landscape: Pine trees and wildflowers."
-        ];
-        
-        let currentMode = null;
-        let outputData = { images: [], videos: [], final_showcase: "" };
-        let suggestionTimer = null;
-
-        // --- 2. UI TOGGLE LOGIC ---
+        const offlineDB = {
+            types: ["Bamboo Eco-Resort", "Modern Concrete Mosque", "Alpine Wooden Cabin", "Desert Sandstone Villa", "Tropical Beach House"],
+            sites: ["a Misty Rainforest in Brazil", "a Snowy Cliff in Norway", "a Riverbank in Bangladesh", "a Desert Oasis in Dubai"],
+            foundations: ["Bamboo Stilts over water", "Reinforced Concrete Base", "Natural Stone & Timber Piling", "Raised Mud Platform"],
+            walls: ["Woven Bamboo Lattice", "Polished White Concrete", "Pine Wood Planks", "Glass & Steel Frames"],
+            roofs: ["Traditional Thatch", "Golden Dome", "Slanted Tin Sheets", "Green Living Roof"],
+            landscapes: ["Water Lilies & Wooden Bridges", "Rose Gardens & Fountains", "Wildflowers & Pine Trees", "Infinity Pool"]
+        };
+        function generateOfflineConcept() {
+            const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+            const concept = `Project: ${pick(offlineDB.types)}. Site: ${pick(offlineDB.sites)}. Foundation: ${pick(offlineDB.foundations)}. Walls: ${pick(offlineDB.walls)}. Roof: ${pick(offlineDB.roofs)}. Landscape: ${pick(offlineDB.landscapes)}.`;
+            const box = document.getElementById('auto_desc');
+            box.value = concept;
+            box.style.border = "1px solid #f59e0b"; setTimeout(() => box.style.border = "1px solid #334155", 500);
+        }
+        window.onload = function() { generateOfflineConcept(); };
+        let currentMode = null; let outputData = { images: [], videos: [], final_showcase: "" }; let suggestionTimer = null; let fetchController = null;
         function toggleMode(mode) {
-            const workspace = document.getElementById('workspace-area');
-            const btn = document.getElementById(`btn-${mode.toLowerCase()}`);
-            
-            if (currentMode === mode && workspace.style.display === 'block') {
-                workspace.style.display = 'none';
-                btn.classList.remove('selected');
-                currentMode = null;
-                return;
-            }
-
-            document.querySelectorAll('.android-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            workspace.style.display = 'block';
-            currentMode = mode;
-
-            document.getElementById('container-a').classList.add('hidden');
-            document.getElementById('container-b').classList.add('hidden');
-            document.getElementById('container-r').classList.add('hidden');
-
-            if(mode === 'A') {
-                document.getElementById('container-a').classList.remove('hidden');
-                renderStrictInputs();
-            } else if(mode === 'B') {
-                document.getElementById('container-b').classList.remove('hidden');
-            } else {
-                document.getElementById('container-r').classList.remove('hidden');
-            }
+            const workspace = document.getElementById('workspace-area'); const resultSection = document.getElementById('result-section'); const btn = document.getElementById(`btn-${mode.toLowerCase()}`);
+            if (currentMode === mode && workspace.classList.contains('open')) { workspace.classList.remove('open'); btn.classList.remove('selected'); resultSection.classList.add('hidden'); currentMode = null; return; }
+            document.querySelectorAll('.android-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); workspace.classList.add('open'); currentMode = mode;
+            document.getElementById('container-a').classList.add('hidden'); document.getElementById('container-b').classList.add('hidden'); document.getElementById('container-r').classList.add('hidden');
+            if(mode === 'A') { document.getElementById('container-a').classList.remove('hidden'); renderStrictInputs(); } 
+            else if(mode === 'B') { document.getElementById('container-b').classList.remove('hidden'); } 
+            else { document.getElementById('container-r').classList.remove('hidden'); }
         }
-
-        function renderStrictInputs() {
-            const count = document.getElementById('total_stages').value;
-            const div = document.getElementById('container-a');
-            div.innerHTML = "";
-            for(let i=0; i<count; i++) div.innerHTML += `<input id="inp_${i}" class="w-full input-3d p-2 text-xs" placeholder="Stage ${i+1}...">`;
-        }
-
-        // --- 3. SUGGESTION LOGIC ---
-        function useBackup() {
-            const box = document.getElementById('auto_desc');
-            const rnd = backups[Math.floor(Math.random() * backups.length)];
-            box.value = rnd;
-            box.style.border = "1px solid #f59e0b"; 
-            setTimeout(() => box.style.border = "1px solid #334155", 500);
-        }
-
+        function renderStrictInputs() { const count = document.getElementById('total_stages').value; const div = document.getElementById('container-a'); div.innerHTML = ""; for(let i=0; i<count; i++) div.innerHTML += `<input id="inp_${i}" class="w-full input-3d p-2 text-xs" placeholder="Stage ${i+1}...">`; }
+        function handleImageUpload() { const file = document.getElementById('img_upload').files[0]; if(file) { const reader = new FileReader(); reader.onload = function(e) { const img = document.getElementById('img_preview'); img.src = e.target.result; document.getElementById('preview_area').classList.remove('hidden'); document.getElementById('upload_text').innerText = "CHANGE"; document.getElementById('analysis_indicator').classList.add('hidden'); }; reader.readAsDataURL(file); } }
+        async function analyzeImage() { const file = document.getElementById('img_upload').files[0]; const box = document.getElementById('rev_desc'); const badge = document.getElementById('source_badge'); const indicatorDiv = document.getElementById('analysis_indicator'); if(!file) return alert("Please upload an image first!"); box.value = "Analyzing visual structure..."; box.placeholder = "Processing..."; indicatorDiv.classList.add('hidden'); setTimeout(() => { const pick = arr => arr[Math.floor(Math.random() * arr.length)]; box.value = `Visual Analysis: A realistic ${pick(offlineDB.types)} structure located in ${pick(offlineDB.sites)}. Features ${pick(offlineDB.walls)} and a ${pick(offlineDB.roofs)}.`; indicatorDiv.classList.remove('hidden'); badge.className = "text-[10px] font-bold px-3 py-1 rounded tracking-widest border bg-orange-900/50 text-orange-400 border-orange-500"; badge.innerText = "🟠 OFFLINE SIMULATION"; }, 2000); }
+        
         async function fetchSuggestion() {
-            const btn = document.getElementById('sugg_text');
-            const pBtn = document.getElementById('sugg_btn');
-            const box = document.getElementById('auto_desc');
-            
+            const btn = document.getElementById('sugg_text'); const pBtn = document.getElementById('sugg_btn'); const box = document.getElementById('auto_desc');
             if(pBtn.disabled) return;
-            
-            box.value = "Dreaming up a concept...";
-            pBtn.disabled = true;
-            let time = 30;
-            
-            if(suggestionTimer) clearInterval(suggestionTimer);
-            suggestionTimer = setInterval(() => {
-                time--;
-                btn.innerText = `WAIT ${time}s`;
-                if(time <= 0) {
-                    clearInterval(suggestionTimer);
-                    useBackup(); 
-                    btn.innerText = "OFFLINE";
-                    pBtn.style.background = "#ef4444";
-                    pBtn.disabled = false;
-                }
-            }, 1000);
-
+            if(fetchController) fetchController.abort(); fetchController = new AbortController();
+            box.value = "Dreaming up a concept..."; pBtn.disabled = true; pBtn.style.background = "#8b5cf6"; 
+            let time = 30; if(suggestionTimer) clearInterval(suggestionTimer);
+            suggestionTimer = setInterval(() => { time--; btn.innerText = `WAIT ${time}s`; if(time <= 0) { clearInterval(suggestionTimer); fetchController.abort(); triggerBackup(btn, pBtn); } }, 1000);
             try {
-                // REALISTIC RURAL PROMPT
-                const systemPrompt = "You are a rural architect. Generate a realistic, nature-integrated concept (e.g., Bangladesh riverside, Swiss Alps, Chinese mountains). Focus on raw materials (Bamboo, Wood, Stone, Mud) and landscape (gardens, water). NO futuristic/sci-fi elements. Format: 'Project: [Name]. Site: [Location]. Materials: [Foundation/Walls/Roof]. Landscape: [Details]'. NO Markdown. Just plain text.";
+                // GET METHOD FOR STABILITY
+                const seed = Math.floor(Math.random() * 999999);
+                const prompt = "Generate a unique architectural concept. Format: 'Project: [Name]. Site: [Location]. Materials: [Details]. Landscape: [Details]'. Output plain text only.";
+                const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai&seed=${seed}`;
                 
-                const res = await fetch('https://text.pollinations.ai/', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: 'Give me a beautiful rural project.' }], seed: Math.floor(Math.random()*9999), model: 'openai' })
-                });
-                
+                const res = await fetch(url, { signal: fetchController.signal });
                 const text = await res.text();
-                let cleanText = text.replace(/[\*#]/g, '').trim(); // Remove md
                 
-                clearInterval(suggestionTimer);
-                box.value = cleanText;
-                btn.innerText = "ONLINE OK";
-                pBtn.style.background = "#22c55e";
-                pBtn.disabled = false;
+                let cleanText = text.replace(/\{"role":.*?"content":"/s, '').replace(/"\}/s, '').replace(/[\{\}]/g, '').replace(/```json/g, '').replace(/```/g, '').trim();
+                if(cleanText.startsWith('"')) cleanText = cleanText.substring(1);
+                if(cleanText.endsWith('"')) cleanText = cleanText.substring(0, cleanText.length-1);
                 
-            } catch(e) {
-                // Fallback handled by timer
-            }
-        }
+                if (cleanText.length < 10) throw new Error("Bad Response");
 
-        // --- 4. LOGIC ENGINE ---
-        function getContext() {
-            if(currentMode === 'B') return document.getElementById('auto_desc').value;
-            if(currentMode === 'R') return document.getElementById('rev_desc').value;
-            let txt = "";
-            const c = document.getElementById('total_stages').value;
-            for(let i=0; i<c; i++) txt += document.getElementById(`inp_${i}`).value + " ";
-            return txt;
+                clearInterval(suggestionTimer); box.value = cleanText; btn.innerText = "ONLINE AI"; pBtn.style.background = "#22c55e"; pBtn.disabled = false;
+            } catch(e) { if(e.name !== 'AbortError') { /* Wait */ } }
         }
-
+        function triggerBackup(btnText, btnElem) { generateOfflineConcept(); btnText.innerText = "OFFLINE DATA"; btnElem.style.background = "#ef4444"; btnElem.disabled = false; }
+        
+        function getContext() { if(currentMode === 'B') return document.getElementById('auto_desc').value; if(currentMode === 'R') return document.getElementById('rev_desc').value; let txt = ""; const c = document.getElementById('total_stages').value; for(let i=0; i<c; i++) txt += document.getElementById(`inp_${i}`).value + " "; return txt; }
+        
         function getMatInfo(text) {
             const t = text.toLowerCase();
-            // DETAILED ACTION CHAIN FOR SEQUENTIAL EDITING
-            if(t.includes('bamboo')) return { 
-                name: 'Bamboo', foundation: 'Bamboo Stilts', 
-                actions: [
-                    'erecting vertical bamboo poles and laying the floor grid',
-                    'weaving intricate bamboo lattice walls and window frames',
-                    'installing the main roof trusses using treated bamboo poles',
-                    'thatching the roof and applying varnish to the structure'
-                ] 
-            };
-            if(t.includes('wood') || t.includes('timber')) return { 
-                name: 'Wood', foundation: 'Timber Posts', 
-                actions: [
-                    'erecting main timber columns and horizontal beams',
-                    'constructing wooden walls with polished planks',
-                    'installing wooden roof trusses and shingles',
-                    'adding decorative wooden railings and stairs'
-                ] 
-            };
-            if(t.includes('mud')) return { 
-                name: 'Mud', foundation: 'Earth Base', 
-                actions: [
-                    'layering the main mud walls with straw reinforcement',
-                    'smoothing the mud plaster and shaping window openings',
-                    'installing the wooden roof frame over mud walls',
-                    'applying final clay finish and painting traditional motifs'
-                ] 
-            };
-            // Default Concrete
-            return { 
-                name: 'Concrete', foundation: 'Concrete Base', 
-                actions: [
-                    'installing reinforced concrete pillars and floor slabs',
-                    'building brick walls and installing window frames',
-                    'casting the roof structure and applying exterior plaster',
-                    'painting walls and installing glass windows'
-                ] 
-            };
+            let debris = "general debris";
+            let workerType = "construction workers";
+            let uniform = "standard safety vests and helmets";
+            
+            if(t.includes('bamboo')) {
+                debris = "rotting bamboo poles, dried thatch, and overgrown vines";
+                workerType = "skilled bamboo artisans";
+                uniform = "traditional light clothing with straw hats";
+                fActions = ['erecting a complete structural bamboo frame', 'weaving full, tight bamboo lattice walls enclosing the space', 'constructing a complete, multi-layered woven bamboo and thatch roof, covering the entire structure with no gaps', 'applying final protective varnish and finishing details to all bamboo elements'];
+            } else if(t.includes('wood')) {
+                debris = "decaying timber planks, rusty nails, and fallen leaves";
+                workerType = "professional carpenters";
+                uniform = "blue overalls and tool belts";
+                fActions = ['erecting the complete main timber column and beam structure', 'installing complete polished wooden plank siding across all exterior walls', 'constructing a finished wooden truss roof system with complete shingle covering', 'finishing all wooden surfaces with polish and installing final trim'];
+            } else {
+                debris = "heavy concrete rubble, broken bricks, and rusty rebar";
+                workerType = "construction masons";
+                uniform = "yellow safety helmets and high-vis vests";
+                fActions = ['installing complete reinforced concrete pillars and beams', 'bricklaying and plastering complete, solid concrete walls around the entire skeleton', 'casting a solid, finished reinforced concrete roof slab over the entire structure', 'painting and finishing all concrete surfaces completely'];
+            }
+            
+            let rActions = ["COMPLETELY removing landscaping", "Dismantling ALL roofing", "Demolishing ALL walls", "Dismantling frame", "Excavating foundation"];
+            return { name: t.includes('bamboo')?'Bamboo':(t.includes('wood')?'Wood':'Concrete'), fActions: fActions, rActions: rActions, debris: debris, workerType: workerType, uniform: uniform };
         }
 
         function generateLogic() {
-            const ctx = getContext();
-            const stages = parseInt(document.getElementById('total_stages').value);
-            const type = document.getElementById('project_type').value;
-            const mat = getMatInfo(ctx);
+            const ctx = getContext(); const stages = parseInt(document.getElementById('total_stages').value);
+            const type = document.getElementById('project_type').value; const mat = getMatInfo(ctx);
             const imgs = [], vids = [];
-
             for(let i=0; i<stages; i++) {
                 let p = "";
+                // FUTURE AWARE CONTEXT
+                const projectGoal = `[PROJECT GOAL: ${ctx}]`; 
+
                 if(currentMode === 'R') {
-                    p = i===0 ? `Stage 1 Final: ${ctx}` : `Stage ${i+1} Reverse: Demolition phase ${i}`;
+                    if(i===0) p = `PROMPT: (Stage 1 - Final) ${projectGoal}. FINISHED PROJECT. Complete structure with mature landscaping, full lighting, furniture, and all details perfectly in place.`;
+                    else if(i===stages-1) p = `PROMPT: (Stage ${i+1} - Site Clear) ${projectGoal}. EDIT PREVIOUS IMAGE: The site is completely cleared. All structures, foundations, and debris are removed. Only bare, natural ground remains.`;
+                    else {
+                        let actionIndex = (i - 1) % mat.rActions.length; 
+                        p = `PROMPT: (Stage ${i+1} - Demolition) ${projectGoal}. EDIT PREVIOUS IMAGE: ${mat.rActions[actionIndex]}. Leaving only the underlying structure. Keep background intact.`;
+                    }
                 } else {
                     if(i===0) {
-                        p = type === 'Renovation' ? 
-                            `PROMPT: (Stage 1) REALISTIC RUINED ${mat.name.toUpperCase()} STRUCTURE. Broken, mossy, abandoned skeleton. Context: ${ctx}` :
-                            `PROMPT: (Stage 1) REALISTIC EMPTY LAND. A vacant plot of land. No building yet. Context: Site for ${ctx}`;
+                        p = type === 'Renovation' ? `PROMPT: (Stage 1 - Base State) ${projectGoal}. [CURRENT STATE: RUINS]. A completely ruined and abandoned ${mat.name.toLowerCase()} skeleton. Broken, mossy. NO roof, NO walls. The site is overgrown. Context: ${ctx}` : `PROMPT: (Stage 1 - Base State) ${projectGoal}. [CURRENT STATE: EMPTY LAND]. A vacant plot of land ready for construction. No building yet.`;
                     } else if(i===1) {
-                        p = type === 'Renovation' ?
-                            `PROMPT: (Stage 2) Edit previous image by: Cleaning the site. Removing ALL debris/vines. The ${mat.name} skeleton stands clean.` :
-                            `PROMPT: (Stage 2) Edit previous image by: Digging foundation pits and preparing the ground for ${mat.foundation}.`;
+                        // SPECIFIC DEBRIS CLEARING
+                        p = type === 'Renovation' ? `PROMPT: (Stage 2 - Prep) ${projectGoal}. EDIT PREVIOUS IMAGE: Site is cleaned. Removing ${mat.debris}. The skeleton stands clean.` : `PROMPT: (Stage 2 - Foundation) ${projectGoal}. EDIT PREVIOUS IMAGE: Foundation pits dug and base poured. No walls yet.`;
                     } else if(i===stages-1) {
-                        p = `PROMPT: (Final) Edit previous image by: Adding luxury finishing, flower gardens, lighting, and polished details.`;
+                        p = `PROMPT: (Final - Completion) ${projectGoal}. EDIT PREVIOUS IMAGE: The structure is completely finished. Luxury finishing, landscaping, and lighting added. Project complete.`;
                     } else {
-                        // SEQUENTIAL ACTION LOGIC (UNIQUE PER STAGE)
-                        let actIdx = i - 2;
-                        let act = mat.actions[actIdx % mat.actions.length];
-                        p = `PROMPT: (Stage ${i+1}) Edit previous image by: ${act}. Constructing the main ${mat.name} structure.`;
+                        let act = mat.fActions[(i-2)%mat.fActions.length];
+                        p = `PROMPT: (Stage ${i+1} - Build) ${projectGoal}. EDIT PREVIOUS IMAGE: [CURRENT ACTION: ${act}]. The element is completely installed with no gaps. Keep previous elements.`;
                     }
                 }
-                imgs.push(p + ", 9:16 vertical ratio");
+                imgs.push(p + ", 9:16 vertical ratio, hyper-realistic architecture style");
             }
 
-            // Video Prompts with Professional Look
             for(let i=0; i<stages-1; i++) {
-                let vAct = i===0 ? "clearing the site and preparing the ground" : `professional workers in matching uniforms ${mat.actions[(i-1)%mat.actions.length] || 'working on structure'}`;
-                vids.push(`VIDEO PROMPT: Cinematic Time-lapse shot of 15+ ${vAct}. No voiceover, ambient sound. 4k.`);
+                let vAct = "";
+                let workers = mat.workerType;
+                let outfit = mat.uniform;
+                
+                if(currentMode === 'R') {
+                    vAct = `demolition crew in protective gear actively demolishing and completely removing major structural parts and clearing ${mat.debris}`;
+                } else {
+                    let actionDesc = i===0 ? `completely clearing ${mat.debris} and leveling the site` : `${mat.fActions[(i-1)%mat.fActions.length].replace('ing a complete', 'ing').replace('full, tight', 'ing')} and completing the work`;
+                    vAct = `${workers} wearing ${outfit} actively engaged in: ${actionDesc}`;
+                }
+                vids.push(`VIDEO PROMPT: Cinematic Time-lapse shot of ${vAct}. No voiceover, ambient sound only.`);
             }
-            
-            // Final Beauty Showcase Video
-            const beautyVid = `FINAL SHOWCASE VIDEO PROMPT: Cinematic slow motion tour of the completed ${mat.name} structure. NO people. Soothing ambient nature sounds. Ultra-realistic 4k.`;
-
-            return { images: imgs, videos: vids, final_showcase: beautyVid };
-        }
-
-        async function generate(source) {
-            const ctx = getContext();
-            if(!ctx) return alert("Please enter description!");
-
-            document.getElementById('result-section').classList.remove('hidden');
-            document.getElementById('loader').classList.remove('hidden');
-            document.getElementById('output-box').classList.add('hidden');
-
-            setTimeout(() => {
-                const data = generateLogic(); 
-                showResult(data, source);
-            }, 1500);
-        }
-
-        function showResult(data, src) {
-            document.getElementById('loader').classList.add('hidden');
-            document.getElementById('output-box').classList.remove('hidden');
-            
-            const badge = document.getElementById('badge');
-            if(src === 'online') {
-                badge.innerText = "ONLINE AI";
-                badge.className = "text-[10px] font-bold px-2 py-1 rounded border bg-green-900 text-green-400 border-green-500";
-            } else {
-                badge.innerText = "OFFLINE LOGIC";
-                badge.className = "text-[10px] font-bold px-2 py-1 rounded border bg-red-900 text-red-400 border-red-500";
-            }
-
-            const div = document.getElementById('content-area');
-            div.innerHTML = "";
-            outputData = data;
-
-            // Render Images
-            data.images.forEach((img, i) => {
-                div.innerHTML += `
-                <div class="prompt-card border-pink-500">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-pink-400">IMG ${i+1}</span>
-                        <button onclick="copyContent(this)" class="mini-copy-btn"><i class="fas fa-copy"></i> Copy</button>
-                    </div>
-                    <div class="text-xs text-gray-300 font-mono select-all content-text">${img}</div>
-                </div>`;
-            });
-
-            // Render Videos
-            data.videos.forEach((vid, i) => {
-                div.innerHTML += `
-                <div class="prompt-card border-blue-500">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-blue-400">VIDEO ${i+1}</span>
-                        <button onclick="copyContent(this)" class="mini-copy-btn"><i class="fas fa-copy"></i> Copy</button>
-                    </div>
-                    <div class="text-xs text-gray-300 font-mono select-all content-text">${vid}</div>
-                </div>`;
-            });
-
-            // Render Final Showcase
-            if(data.final_showcase) {
-                div.innerHTML += `
-                <div class="prompt-card border-yellow-500">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-yellow-400">FINAL SHOWCASE</span>
-                        <button onclick="copyContent(this)" class="mini-copy-btn"><i class="fas fa-copy"></i> Copy</button>
-                    </div>
-                    <div class="text-xs text-gray-300 font-mono select-all content-text">${data.final_showcase}</div>
-                </div>`;
-            }
-        }
-
-        // --- NEW COPY FUNCTIONS ---
-        function copyContent(btn) {
-            const text = btn.closest('.prompt-card').querySelector('.content-text').innerText;
-            navigator.clipboard.writeText(text);
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = `<i class="fas fa-check"></i> Copied`;
-            setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
-        }
-
-        function copyAll() {
-            let txt = "";
-            outputData.images.forEach(i => txt += i + "\n\n");
-            outputData.videos.forEach(v => txt += v + "\n\n");
-            if(outputData.final_showcase) txt += outputData.final_showcase + "\n";
-            navigator.clipboard.writeText(txt);
-            alert("All prompts copied to clipboard!");
+            return { images: imgs, videos: vids, final_showcase: `FINAL SHOWCASE VIDEO PROMPT: Cinematic tour of the finished ${currentMode==='R'?'site':'project'}. No voiceover, ambient sound only. 4k.` };
         }
         
-        function runEdit() {
-            const txt = document.getElementById('edit_txt').value;
-            if(!txt) return;
-            outputData.images.splice(outputData.images.length-1, 0, `PROMPT: (Edited) Edit previous: ${txt}`);
-            showResult(outputData, 'offline');
+        async function generate(source) {
+            const ctx = getContext(); if(!ctx) return alert("Please enter description!");
+            document.getElementById('result-section').classList.remove('hidden'); document.getElementById('loader').classList.remove('hidden'); document.getElementById('output-box').classList.add('hidden');
+            setTimeout(() => { const data = generateLogic(); showResult(data, source); }, 1500);
+        }
+        function showResult(data, src) {
+            document.getElementById('loader').classList.add('hidden'); document.getElementById('output-box').classList.remove('hidden');
+            const badge = document.getElementById('badge');
+            if(src === 'online') { badge.innerText = "ONLINE AI"; badge.className = "text-[10px] font-bold px-2 py-1 rounded border bg-green-900 text-green-400 border-green-500"; } 
+            else { badge.innerText = "OFFLINE LOGIC"; badge.className = "text-[10px] font-bold px-2 py-1 rounded border bg-red-900 text-red-400 border-red-500"; }
+            const div = document.getElementById('content-area'); div.innerHTML = ""; outputData = data;
+            data.images.forEach((img, i) => { div.innerHTML += `<div class="prompt-card border-pink-500"><div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-pink-400">IMG ${i+1}</span><button onclick="copyContent(this)" class="mini-copy-btn"><i class="fas fa-copy"></i> Copy</button></div><div class="text-xs text-gray-300 font-mono select-all content-text">${img}</div></div>`; });
+            data.videos.forEach((vid, i) => { div.innerHTML += `<div class="prompt-card border-blue-500"><div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-blue-400">VIDEO ${i+1}</span><button onclick="copyContent(this)" class="mini-copy-btn"><i class="fas fa-copy"></i> Copy</button></div><div class="text-xs text-gray-300 font-mono select-all content-text">${vid}</div></div>`; });
+            if(data.final_showcase) div.innerHTML += `<div class="prompt-card border-yellow-500"><div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-yellow-400">FINAL SHOWCASE</span><button onclick="copyContent(this)" class="mini-copy-btn"><i class="fas fa-copy"></i> Copy</button></div><div class="text-xs text-gray-300 font-mono select-all content-text">${data.final_showcase}</div></div>`;
+        }
+        function copyContent(btn) { const text = btn.closest('.prompt-card').querySelector('.content-text').innerText; navigator.clipboard.writeText(text); const originalHTML = btn.innerHTML; btn.innerHTML = `<i class="fas fa-check"></i> Copied`; setTimeout(() => { btn.innerHTML = originalHTML; }, 1500); }
+        function copyAll() { let txt = ""; outputData.images.forEach(i => txt += i + "\n\n"); outputData.videos.forEach(v => txt += v + "\n\n"); if(outputData.final_showcase) txt += outputData.final_showcase + "\n"; navigator.clipboard.writeText(txt); alert("All prompts copied!"); }
+        async function applySmartEdit() {
+            const action = document.getElementById('edit_action').value; const stageNum = parseInt(document.getElementById('edit_stage_num').value); const instr = document.getElementById('edit_instr').value;
+            if(!stageNum || (action === 'add' && !instr)) return alert("Please fill details!");
+            document.getElementById('loader').classList.remove('hidden'); document.getElementById('output-box').classList.add('hidden');
+            // FUTURE AWARE EDIT
+            const currentContext = getContext();
+            const projectContext = `[PROJECT GOAL: ${currentContext}]`;
+            
+            if(action === 'remove') { if(stageNum > 0 && stageNum <= outputData.images.length) { outputData.images.splice(stageNum - 1, 1); if(stageNum <= outputData.videos.length) outputData.videos.splice(stageNum - 1, 1); } } 
+            else {
+                try { const res = await fetch('https://text.pollinations.ai/', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ messages: [{ role: 'system', content: `Convert to prompt: "${instr}". Context: ${currentContext}. Format: "EDIT PREVIOUS IMAGE: Fully complete the following: [Details]. Keep surrounding elements intact.". NO MARKDOWN.` }], model: 'openai' }) }); let newText = await res.text(); outputData.images.splice(stageNum, 0, `PROMPT: (Stage ${stageNum + 1} - Edited) ${projectContext}. ${newText}, 9:16 vertical ratio`); outputData.videos.splice(stageNum, 0, `VIDEO PROMPT: Cinematic Time-lapse of workers executing: ${instr}. 4k.`); } 
+                catch(e) { outputData.images.splice(stageNum, 0, `PROMPT: (Stage ${stageNum + 1} - Edited) ${projectContext}. EDIT PREVIOUS IMAGE: Fully complete: ${instr}. Keep previous elements. 9:16 vertical ratio`); outputData.videos.splice(stageNum, 0, `VIDEO PROMPT: Cinematic Time-lapse of workers doing: ${instr}. 4k.`); }
+            }
+            outputData.images = outputData.images.map((img, i) => img.replace(/PROMPT: \(Stage \d+/, `PROMPT: (Stage ${i + 1}`)); setTimeout(() => { showResult(outputData, 'online'); }, 1000);
         }
     </script>
 </body>
