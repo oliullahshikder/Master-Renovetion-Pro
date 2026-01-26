@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Craftsman Pro 3D (Auto-Translate)</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-green: #00e676;
+            --accent-blue: #2979ff;
+            --accent-orange: #ff9100;
+            --accent-purple: #d500f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* --- 3D CONTROL PANEL --- */
+        .control-panel {
+            background-color: var(--card-bg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 30px;
+            border-bottom: 6px solid #111; 
+            z-index: 100;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+            background: linear-gradient(to right, var(--accent-orange), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            font-weight: 900;
+            text-shadow: 0 4px 10px rgba(213, 0, 249, 0.3);
+        }
+
+        .dev-badge {
+            background: linear-gradient(90deg, #333, #444);
+            color: var(--accent-green);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 10px;
+            border: 1px solid var(--accent-green);
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 230, 118, 0.2);
+        }
+
+        /* Input Area */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .label-text {
+            font-weight: bold;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 3D MAGIC BUTTON */
+        .btn-magic {
+            background: linear-gradient(145deg, #d500f9, #aa00ff);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #7b1fa2;
+            transition: all 0.1s;
+            text-transform: uppercase;
+        }
+
+        .btn-magic:active {
+            transform: translateY(5px);
+            box-shadow: 0 0 0 #7b1fa2;
+        }
+
+        textarea {
+            background-color: #151515;
+            border: 3px solid #333;
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            font-size: 1.1rem;
+            min-height: 100px;
+            font-family: monospace;
+            resize: vertical;
+            transition: 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 20px rgba(255, 145, 0, 0.2);
+        }
+
+        /* 3D GENERATE BUTTON */
+        .btn-generate {
+            border: none;
+            border-radius: 16px;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            color: white;
+            transition: all 0.1s;
+            background: linear-gradient(145deg, #2979ff, #1565c0);
+            box-shadow: 0 8px 0 #0d47a1;
+            width: 100%;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        .btn-generate:active {
+            transform: translateY(8px);
+            box-shadow: 0 0 0 #0d47a1;
+        }
+
+        /* --- OUTPUT FEED --- */
+        #results-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .result-card {
+            background-color: var(--card-bg);
+            border: 2px solid #333;
+            border-radius: 20px;
+            overflow: hidden;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, #222, #1a1a1a);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .prompt-text {
+            padding: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #a5d6a7;
+            background: #050505;
+            white-space: pre-wrap;
+            border-bottom: 2px solid #333;
+        }
+
+        .image-container {
+            width: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        .generated-img {
+            width: 100%;
+            display: block;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+        }
+
+        .btn-copy-small {
+            background: #424242;
+            color: var(--accent-green);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #212121;
+        }
+
+        .btn-copy-small:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #212121;
+        }
+
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="control-panel">
+            <header>
+                <h1>Master Craftsman AI</h1>
+                <div style="font-size: 0.8rem; color: #aaa; margin-bottom:5px;">BANGLA/ENGLISH SUPPORTED</div>
+                <div class="dev-badge">Developed by OLIULLAH SHIKDER JEWEL</div>
+            </header>
+
+            <div class="input-group">
+                <div class="label-row">
+                    <span class="label-text">Your Concept</span>
+                    <button class="btn-magic" onclick="fetchRandomIdea()" id="idea-btn">
+                        🎲 Surprise Me
+                    </button>
+                </div>
+
+                <textarea id="user-input" placeholder="Example: বাঁশ দিয়ে বানানো আয়রন ম্যান গ্রামের রাস্তায় দাঁড়িয়ে আছে..."></textarea>
+                
+                <button class="btn-generate" onclick="generateLogicPrompt()" id="gen-btn">
+                    GENERATE MASTERPIECE
+                </button>
+            </div>
+        </div>
+
+        <div id="results-feed"></div>
+    </div>
+
+    <script>
+        // --- LOGIC 1: FETCH IDEA ---
+        async function fetchRandomIdea() {
+            const inputBox = document.getElementById('user-input');
+            const btn = document.getElementById('idea-btn');
+            
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `⏳ Fetching...`;
+            inputBox.style.opacity = "0.5";
+
+            const prompt = `Suggest ONE creative sculpture idea using a natural material (Bamboo, Jute, Clay, Leaves) in a rural Bangladeshi setting. Format: [Subject] made of [Material] in [Pose]. Output ONLY the sentence in ENGLISH.`;
+            
+            try {
+                const seed = Math.floor(Math.random() * 99999);
+                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?seed=${seed}`);
+                const text = await res.text();
+                inputBox.value = text.trim();
+            } catch (e) {
+                inputBox.value = "Error fetching idea. Try again.";
+            } finally {
+                btn.innerHTML = originalText;
+                inputBox.style.opacity = "1";
+            }
+        }
+
+        // --- LOGIC 2: TRANSLATE & GENERATE ENGINE ---
+        async function generateLogicPrompt() {
+            const inputVal = document.getElementById('user-input').value.trim();
+            const feed = document.getElementById('results-feed');
+            const btn = document.getElementById('gen-btn');
+
+            if(!inputVal) return alert("Please enter a concept!");
+
+            // UI Loading
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "🛠️ TRANSLATING & WEAVING...";
+            btn.style.background = "linear-gradient(145deg, #444, #333)";
+            btn.style.boxShadow = "none";
+            btn.style.transform = "translateY(8px)"; 
+            btn.disabled = true;
+
+            try {
+                // STEP A: AI PARSER + TRANSLATOR COMBO
+                // This single prompt handles both translation (if Bangla) and formatting (to English).
+                const parserPrompt = `
+                Analyze this user input: "${inputVal}"
+                
+                INSTRUCTIONS:
+                1. LANGUAGE CHECK: If the input is in Bangla (Bengali), TRANSLATE it mentally to English first.
+                2. EXTRACTION: Describe ONLY the visual appearance of the SCULPTURE and the MATERIAL TEXTURE based on the translated concept.
+                3. OUTPUT RULE: The output must be 100% in ENGLISH. No Bangla characters in output.
+                
+                CONTENT TO GENERATE:
+                - SCULPTURE VISUAL: How does the subject look as a crafted object? (Pose, size, shape)
+                - MATERIAL TEXTURE: Detailed texture of the specific material (e.g., woven bamboo patterns, rough jute fibers, dried leaf veins).
+                
+                FINAL OUTPUT: Combine into ONE detailed paragraph in ENGLISH. Do NOT mention the craftsman yet.
+                `;
+
+                const seed = Math.floor(Math.random() * 999999);
+                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(parserPrompt)}?seed=${seed}&model=openai`);
+                let aiDescription = await res.text();
+                
+                // Cleanup (Just in case AI adds fluff)
+                aiDescription = aiDescription.replace(/Here is|Translation:|Output:/gi, "").trim();
+
+                // STEP B: APPLY HARD LOGIC (Concatenation)
+                const finalPrompt = `
+/imagine prompt: 
+**SCULPTURE:** ${aiDescription}
+
+**CRAFTSMAN:** A real elderly Bangladeshi craftsman stands proudly BESIDE the sculpture. He is wearing a traditional lungi and faded ganji, looking directly at the camera with a calm, proud expression. His hand rests on the artwork to show scale.
+
+**ENVIRONMENT:** A realistic rural Bangladeshi courtyard (Uthan) with mud ground, scattered crafting tools (Da, Boti), and bamboo shavings on the floor. Soft, warm natural daylight.
+
+**TECHNICAL:** Ultra-realistic, 8K, macro details of weaving, cinematic lighting, photorealistic texture. --ar 9:16 --v 6.0 --style raw
+                `.trim();
+
+                // STEP C: GENERATE IMAGE
+                const imgPrompt = encodeURIComponent(finalPrompt + " hyperrealistic photography");
+                const imgUrl = `https://image.pollinations.ai/prompt/${imgPrompt}?width=576&height=1024&nologo=true&seed=${seed}`;
+
+                // STEP D: DISPLAY CARD
+                const newCard = document.createElement('div');
+                newCard.className = 'result-card';
+                newCard.innerHTML = `
+                    <div class="card-header">
+                        <span class="timestamp">ENGLISH OUTPUT ✅</span>
+                        <button class="btn-copy-small" onclick="copyText(this)">COPY PROMPT</button>
+                    </div>
+                    <div class="prompt-text">${finalPrompt}</div>
+                    <div class="image-container">
+                        <img src="${imgUrl}" class="generated-img" alt="Generating..." onload="this.style.opacity=1">
+                    </div>
+                `;
+                
+                feed.prepend(newCard);
+
+            } catch (error) {
+                console.log(error);
+                alert("Network Error. Please check your internet connection.");
+            } finally {
+                // Reset Button
+                btn.innerHTML = originalText;
+                btn.style.background = ""; 
+                btn.style.boxShadow = ""; 
+                btn.style.transform = "";
+                btn.disabled = false;
+            }
+        }
+
+        function copyText(btn) {
+            const text = btn.parentElement.nextElementSibling.innerText;
+            navigator.clipboard.writeText(text);
+            const old = btn.innerText;
+            btn.innerText = "COPIED!";
+            setTimeout(() => btn.innerText = old, 1500);
+        }
+    </script>
+</body>
+</html>
